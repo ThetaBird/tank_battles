@@ -22,8 +22,31 @@ function Parameters(){
     }
 
     this.TANK_TYPES = {
-        RECO:1,
-        SNIP:2,
-        TENC:3,
+        RECO:{
+            UID:1,
+            HLT:100,
+            SPD:100,
+            DMG:40,
+            RNG:100,
+            RLD:1000 //ms
+        },
+        SNIP:{
+            UID:2,
+            HLT:50,
+            SPD:75,
+            DMG:200,
+            RNG:200,
+            RLD:2000
+        },
+        TENC:{
+            UID:3,
+            HLT:150,
+            SPD:50,
+            DMG:80,
+            RNG:120,
+            RLD:1500
+        }
     }
 }
+
+module.exports = {Parameters}
