@@ -14,6 +14,7 @@ function Tank(){
         DMG:0,
         RNG:0,
         RLD:0,
+        RTS:0,
     };
     this.health = 0;
     this.lastProjectile = new Date();
@@ -40,17 +41,20 @@ Runs on every physics cycle, updates tank pos based on perceived user input.
 */
 Tank.prototype.updatePos = () => {
     const {w, s, d, a, m} = this.input;
-    const {theta_turret} = this.pos;
+    const {theta_turret, theta_tank} = this.pos;
+    const {SPD, RTS} = this.type;
 
     const forward = w - s;
     const rotate_tank = d - a;
     const rotate_turret = theta_turret - m;
 
     if(forward){
-
+        this.pos.x += SPD * Math.sin(theta_tank);
+        this.pos.y -= SPD * Math.cos(theta_tank);
     }
     if(rotate_tank){
-
+        const max_tank_rotate = 10*RTS * (theta_tank > 0 ? 1 : -1);
+        this.pos.theta_tank += max_tank_rotate;
     }
     if(rotate_turret){
 

@@ -28,7 +28,8 @@ module.exports = Object.freeze({
             SPD:100,
             DMG:40,
             RNG:100,
-            RLD:1000 //ms
+            RLD:1000, //ms
+            RTS:.3,
         },
         SNIP:{
             UID:2,
@@ -36,7 +37,8 @@ module.exports = Object.freeze({
             SPD:75,
             DMG:200,
             RNG:200,
-            RLD:2000
+            RLD:2000,
+            RTS:.1,
         },
         TENC:{
             UID:3,
@@ -44,7 +46,8 @@ module.exports = Object.freeze({
             SPD:50,
             DMG:80,
             RNG:120,
-            RLD:1500
+            RLD:1500,
+            RTS:.2,
         }
     },
 });
