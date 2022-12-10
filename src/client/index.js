@@ -42,7 +42,6 @@ function logKeyDown(e){
 
 function logKeyUp(e){
     tryToggleKey(e.key, 0) ? sendInputToServer() : {};
-    
 }
 
 const limit = 1000/60;
@@ -58,3 +57,22 @@ function tryToggleKey(key, val){
 const sendInputToServer = throttle(limit, () => {
     socket.emit(Parameters.SOCKET_PROTOCOL_RCV.USER_INPUT, input);
 })
+
+const joinGameRequest = () => {
+    const data = {
+        displayName:"ThetaBird",
+        uid:"12345",
+    }
+    socket.emit(Parameters.SOCKET_PROTOCOL_RCV.JOIN_GAME, data);
+    document.addEventListener("keypress", logKeyDown);
+    document.addEventListener("keyup", logKeyUp);
+}
+
+const spawnTankRequest = (type) => {
+    socket.emit(Parameters.SOCKET_PROTOCOL_RCV.SPAWN, type)
+}
+
+
+joinGameRequest();
+const type = Parameters.TANK_TYPES.RECO;
+spawnTankRequest(type);

@@ -8,17 +8,21 @@ Author: Max Jikharev
 function Team(){
     this.players = [];
     this.color = null;
+
+    this.addPlayer = (player) => _addPlayer(this, player) 
+    this.removePlayer = (player) => _removePlayer(this, player) 
+    this.setColor = (color) => _setColor(this, color) 
 }
 
-Team.prototype.addPlayer = (player) => {
+const _addPlayer = (team, player) => {
 
 }
 
-Team.prototype.removePlayer = (player) => {
+const _removePlayer = (team, player) => {
 
 }
 
-Team.prototype.setColor = (color) => {
+const _setColor = (team, color) => {
 
 }
 

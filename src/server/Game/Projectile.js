@@ -10,13 +10,15 @@ function Projectile(){
 
     //For future anti-friendly-fire functionality
     //this.team = 0;
+
+    this.updatePos = () => _updatePos(this)
 }
 
 /*
 void Projectile.prototype.updatePos()
 Runs on every physics cycle, updates projectile pos.
 */ 
-Projectile.prototype.updatePos = () => {
+Projectile.prototype.updatePos = (projectile) => {
 
 }
 

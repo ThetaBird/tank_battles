@@ -22,10 +22,15 @@ module.exports = Object.freeze({
     },
 
     TANK_TYPES: {
+        RECO:"RECO",
+        SNIP:"SNIP",
+        TENC:"TENC",
+    },
+
+    TANK_CONSTANTS: {
         RECO:{
-            UID:1,
             HLT:100,
-            SPD:100,
+            SPD:1,
             DMG:40,
             RNG:100,
             RLD:1000, //ms
@@ -34,7 +39,7 @@ module.exports = Object.freeze({
         SNIP:{
             UID:2,
             HLT:50,
-            SPD:75,
+            SPD:.75,
             DMG:200,
             RNG:200,
             RLD:2000,
@@ -43,7 +48,7 @@ module.exports = Object.freeze({
         TENC:{
             UID:3,
             HLT:150,
-            SPD:50,
+            SPD:.5,
             DMG:80,
             RNG:120,
             RLD:1500,

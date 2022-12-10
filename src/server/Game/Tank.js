@@ -5,9 +5,16 @@ Player Object for tank & team assignments.
 Author: Max Jikharev
 */
 
-function Tank(){
-    this.displayName = null;
-    this.type = {
+const Parameters = require('../../data');
+const radians = Math.PI * 2;
+
+function Tank(type, displayName){
+    console.log({type});
+    this.displayName = displayName;
+    this.constants = Parameters.TANK_CONSTANTS[type];
+    if(!this.constants) return;
+    /*
+    {
         UID:0,
         HLT:0,
         SPD:0,
@@ -15,15 +22,16 @@ function Tank(){
         RNG:0,
         RLD:0,
         RTS:0,
-    };
-    this.health = 0;
+    };*/
+
+    this.health = this.constants.HLT;
     this.lastProjectile = new Date();
 
     this.pos = {
-        x:null,
-        y:null,
-        theta_turret:null,
-        theta_tank:null,
+        x:0,
+        y:0,
+        theta_turret:0,
+        theta_tank:0,
     };
     
     this.input = {
@@ -33,32 +41,44 @@ function Tank(){
         d:0, //right
         m:0, //mouse angle
     }
+
+    this.updatePos = () => _updatePos(this)
+    this.removeHealth = (amt) => _removeHealth(this, amt)
+    this.spawnProjectile = () => _spawnProjectile(this)
 }
 
 /*
 void Tank.prototype.updatePos()
 Runs on every physics cycle, updates tank pos based on perceived user input.
 */
-Tank.prototype.updatePos = () => {
-    const {w, s, d, a, m} = this.input;
-    const {theta_turret, theta_tank} = this.pos;
-    const {SPD, RTS} = this.type;
+const _updatePos = (tank) => {
+    const {w, s, d, a, m} = tank.input;
+    const {theta_turret, theta_tank} = tank.pos;
+    const {SPD, RTS} = tank.constants;
 
     const forward = w - s;
     const rotate_tank = d - a;
     const rotate_turret = theta_turret - m;
 
     if(forward){
-        this.pos.x += SPD * Math.sin(theta_tank);
-        this.pos.y -= SPD * Math.cos(theta_tank);
+        //These values don't seem to be behaving correctly, TODO: fix
+        tank.pos.x += SPD * Math.sin(theta_tank) * (forward > 0 ? -1 : 1);
+        tank.pos.y -= SPD * Math.cos(theta_tank) * (forward > 0 ? 1 : -1);
+        console.log(tank.pos)
     }
     if(rotate_tank){
-        const max_tank_rotate = 10*RTS * (theta_tank > 0 ? 1 : -1);
-        this.pos.theta_tank += max_tank_rotate;
+        const max_tank_rotate = RTS * (rotate_tank > 0 ? 1 : -1);
+        let final_val = theta_tank + max_tank_rotate;
+        if(final_val >= radians){final_val -= radians}
+        else if(final_val < 0){final_val += radians}
+        tank.pos.theta_tank = final_val;
+        
+        console.log(tank.pos)
     }
     if(rotate_turret){
 
     }
+   
 }
 
 /*
@@ -66,8 +86,8 @@ bool Tank.prototype.removeHealth(int amt)
 Runs when physics engine determines a hit, deducts a defined amount from tank health.
 Returns false if health remains above 0, true otherwise.
 */
-Tank.prototype.removeHealth = (amt) => {
-    this.health -= amt;
+const _removeHealth = (tank, amt) => {
+    tank.health -= amt;
     return (health <= 0);
 }
 
@@ -76,11 +96,11 @@ any Tank.prototype.spawnProjectile()
 Runs when client requests to shoot. Checks if reload cooldown is active.
 Returns false if cooldown active, {x, y, theta_turret, DMG} otherwise.
 */
-Tank.prototype.spawnProjectile = () => {
-    const {RLD, DMG} = this.type;
-    if(RLD > Date.now() - this.lastProjectile) return false;
+const _spawnProjectile = (tank) => {
+    const {RLD, DMG} = tank.constants;
+    if(RLD > Date.now() - tank.lastProjectile) return false;
 
-    const {x, y, theta_turret} = this.pos;
+    const {x, y, theta_turret} = tank.pos;
     return {x, y, theta_turret, DMG};
 }
 
