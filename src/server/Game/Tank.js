@@ -59,7 +59,7 @@ const _updatePos = (tank) => {
     const forward = w - s;
     const rotate_tank = d - a;
     const rotate_turret = theta_turret - m;
-
+    
     if(forward){
         //These values don't seem to be behaving correctly, TODO: fix
         tank.pos.x += SPD * Math.sin(theta_tank) * (forward > 0 ? -1 : 1);
@@ -97,11 +97,11 @@ Runs when client requests to shoot. Checks if reload cooldown is active.
 Returns false if cooldown active, {x, y, theta_turret, DMG} otherwise.
 */
 const _spawnProjectile = (tank) => {
-    const {RLD, DMG} = tank.constants;
+    const {RLD, DMG, RNG} = tank.constants;
     if(RLD > Date.now() - tank.lastProjectile) return false;
 
     const {x, y, theta_turret} = tank.pos;
-    return {x, y, theta_turret, DMG};
+    return {x, y, t:theta_turret, d:DMG, r:RNG};
 }
 
 module.exports = {Tank}

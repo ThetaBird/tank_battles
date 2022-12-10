@@ -12,6 +12,7 @@ module.exports = Object.freeze({
         GAME_UPDATE:"update", //client requests to get up-to-date info (stats, pos, etc)
         USER_INPUT:"input", //client requests server to process change in input
         SPAWN:"spawn", //client requests to spawn to battlefield
+        FIRE:"fire", //client requests to spawn a projectile
     },
 
     //Server-to-client socket msg types

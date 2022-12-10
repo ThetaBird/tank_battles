@@ -22,6 +22,7 @@ function SessionController(){
 
     this.spawnTank = (data) => _spawnTank(this, data);
     this.updateTankInput = (uid, data) => _updateTankInput(this, uid, data);
+    this.fireProjectile = (uid) => _fireProjectile(this, uid); 
 }
 
 //Add user data to memory. Used to keep track of display
@@ -51,5 +52,6 @@ const _spawnTank = (controller, data) => {
     console.log(controller.round)
 }
 const _updateTankInput = (controller, uid, data) => controller.round.updateTankInput(uid, data);
+const _fireProjectile = (controller, uid) => controller.round.fireProjectile(uid);
 
 module.exports = {SessionController}

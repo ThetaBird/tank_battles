@@ -26,12 +26,15 @@ Promise.all([
 
 document.addEventListener("keypress", logKeyDown);
 document.addEventListener("keyup", logKeyUp);
+document.addEventListener("mousemove", logMouseMove);
+document.addEventListener("mousedown", logMouseDown);
 
 let input = {
     w:0,
     a:0,
     s:0,
     d:0,
+    m:0
 }
 
 const keys = Object.keys(input);
@@ -44,7 +47,25 @@ function logKeyUp(e){
     tryToggleKey(e.key, 0) ? sendInputToServer() : {};
 }
 
-const limit = 1000/60;
+function logMouseMove(e){
+    const {clientX, clientY} = e;
+    const m = Math.atan2(clientX - window.innerWidth / 2, window.innerHeight / 2 - clientY);
+    input.m = m;
+
+    sendInputToServer();
+}
+
+const fireLimit = 1000/10;
+const sendFireToServer = throttle(fireLimit, () => {
+    socket.emit(Parameters.SOCKET_PROTOCOL_RCV.FIRE);
+})
+
+function logMouseDown(e){
+    e.preventDefault();
+    sendFireToServer();
+}
+
+
 
 
 function tryToggleKey(key, val){
@@ -54,6 +75,7 @@ function tryToggleKey(key, val){
     return true;
 }
 
+const limit = 1000/60;
 const sendInputToServer = throttle(limit, () => {
     socket.emit(Parameters.SOCKET_PROTOCOL_RCV.USER_INPUT, input);
 })
