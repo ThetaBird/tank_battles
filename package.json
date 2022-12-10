@@ -23,6 +23,7 @@
     "path": "^0.12.7",
     "socket.io": "^4.5.4",
     "socket.io-client": "^4.5.4",
+    "three": "^0.147.0",
     "throttle-debounce": "^5.0.0"
   },
   "devDependencies": {

@@ -1,5 +1,7 @@
 import io from 'socket.io-client';
 import { throttle } from 'throttle-debounce';
+
+const {upsertObjects} = require('./render');
 const Parameters = require('../data');
 
 const socketProtocol = (window.location.protocol.includes('https')) ? 'wss' : 'ws';
@@ -29,7 +31,7 @@ document.addEventListener("mousemove", logMouseMove);
 document.addEventListener("mousedown", logMouseDown);
 
 function handleGameData(data){
-    console.log(JSON.parse(data));
+    upsertObjects(JSON.parse(data), "ThetaBird");
 }
 
 let input = {
@@ -50,11 +52,12 @@ function logKeyUp(e){
     tryToggleKey(e.key, 0) ? sendInputToServer() : {};
 }
 
+const tpi = Math.PI * 2;
 function logMouseMove(e){
     const {clientX, clientY} = e;
-    const m = Math.atan2(clientX - window.innerWidth / 2, window.innerHeight / 2 - clientY);
+    let m = Math.atan2(clientX - window.innerWidth / 2, window.innerHeight / 2 - clientY) + Math.PI;
     input.m = m;
-
+    console.log(m);
     sendInputToServer();
 }
 
@@ -74,7 +77,6 @@ function logMouseDown(e){
 function tryToggleKey(key, val){
     if(!keys.includes(key) || val == input[key]) return false;
     input[key] = val;
-    console.log(`Set key ${key} to ${val}`);
     return true;
 }
 

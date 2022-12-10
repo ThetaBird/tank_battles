@@ -30,7 +30,7 @@ const game_update = (handler, data) => {
 }
 
 const game_input = (handler, data) => {
-    console.log({data})
+    //console.log({data})
     const {Session, uid} = handler;
     Session.updateTankInput(uid, data);
 }
