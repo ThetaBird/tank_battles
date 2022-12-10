@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const {SocketRequestHandler} = require('./Sesssion/SocketRequest');
 
 const app = express();
-const publicPath = path.resolve(__dirname, "public");
+const publicPath = path.resolve(__dirname, "../../public");
 app.use(express.static(publicPath));
 app.use(bodyParser.urlencoded({ extended: false }));
 
