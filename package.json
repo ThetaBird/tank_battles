@@ -4,7 +4,8 @@
   "description": "Multiplayer Tank Battle Game",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack --config webpack.common.js",
+    "dev": "cross-env NODE_ENV=development node src/server/app.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,15 @@
   "bugs": {
     "url": "https://github.com/ThetaBird/tank_battles/issues"
   },
-  "homepage": "https://github.com/ThetaBird/tank_battles#readme"
+  "homepage": "https://github.com/ThetaBird/tank_battles#readme",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2",
+    "path": "^0.12.7",
+    "socket.io": "^4.5.4"
+  },
+  "devDependencies": {
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
+  }
 }
