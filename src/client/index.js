@@ -1,4 +1,6 @@
 import io from 'socket.io-client';
+import { throttle } from 'throttle-debounce';
+const Parameters = require('../data');
 
 const socketProtocol = (window.location.protocol.includes('https')) ? 'wss' : 'ws';
 const socket = io(`${socketProtocol}://${window.location.host}`, { reconnection: false });
@@ -35,12 +37,16 @@ let input = {
 const keys = Object.keys(input);
 
 function logKeyDown(e){
-    tryToggleKey(e.key, 1);
+    tryToggleKey(e.key, 1) ? sendInputToServer() : {};
 }
 
 function logKeyUp(e){
-    tryToggleKey(e.key, 0);
+    tryToggleKey(e.key, 0) ? sendInputToServer() : {};
+    
 }
+
+const limit = 1000/60;
+
 
 function tryToggleKey(key, val){
     if(!keys.includes(key) || val == input[key]) return false;
@@ -48,3 +54,7 @@ function tryToggleKey(key, val){
     console.log(`Set key ${key} to ${val}`);
     return true;
 }
+
+const sendInputToServer = throttle(limit, () => {
+    socket.emit(Parameters.SOCKET_PROTOCOL_RCV.USER_INPUT, input);
+})

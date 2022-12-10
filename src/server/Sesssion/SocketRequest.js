@@ -19,7 +19,7 @@ const game_update_request_handler = (data) => {
 }
 
 const game_input_request_handler = (data) => {
-
+    console.log(data)
 }
 
 const game_spawn_request_handler = (data) => {
