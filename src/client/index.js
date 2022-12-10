@@ -14,9 +14,8 @@ const connectedPromise = new Promise(resolve => {
 
 const connect = () => (
     connectedPromise.then(() => {
-      socket.on('disconnect', () => {
-        console.log('Disconnected from server.');
-      });
+        socket.on(Parameters.SOCKET_PROTOCOL_SND.GAME_DATA, handleGameData);
+        socket.on('disconnect', () => {console.log('Disconnected from server.')});
     })
   );
 
@@ -28,6 +27,10 @@ document.addEventListener("keypress", logKeyDown);
 document.addEventListener("keyup", logKeyUp);
 document.addEventListener("mousemove", logMouseMove);
 document.addEventListener("mousedown", logMouseDown);
+
+function handleGameData(data){
+    console.log(JSON.parse(data));
+}
 
 let input = {
     w:0,

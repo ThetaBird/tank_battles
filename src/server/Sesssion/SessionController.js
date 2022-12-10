@@ -8,8 +8,8 @@ Author: Max Jikharev
 
 const {RoundController} = require("../Game/RoundController");
 
-function SessionController(){
-    this.roundController = new RoundController();
+function SessionController(io){
+    this.roundController = new RoundController(io);
     this.round = null;
 
     this.users = {};

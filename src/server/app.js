@@ -14,10 +14,10 @@ const PORT = process.env.PORT || 8080;
 const server = app.listen(PORT);
 console.log(`Listening on port ${PORT}`);
 
-const Session = new SessionController();
-Session.createRound();
-
 const io = new Server(server);
+
+const Session = new SessionController(io);
+Session.createRound()
 
 io.on('connection', (socket) => {
     console.log(socket.id);

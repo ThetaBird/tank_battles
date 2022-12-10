@@ -18,7 +18,9 @@ function Round(){
     }
     this.tanks = {};
     this.projectiles = [];
-    this.stats = {}
+    this.stats = {};
+
+    this.updateString = "";
 
     this.spawnTank = (data) => _spawnTank(this, data);
     this.updateTankInput = (uid, input) => _updateTankInput(this, uid, input);
@@ -27,6 +29,8 @@ function Round(){
     this.moveTanks = () => _moveTanks(this);
     this.moveProjectiles = () => _moveProjectiles(this);
     this.checkCollisions = () => _checkCollisions(this);
+
+    this.getUpdate = () => {return _getUpdate(this)};
 }
 
 //Handle client socket requests
@@ -44,5 +48,27 @@ const _moveProjectiles = (round) => {
     round.projectiles = round.projectiles.filter(projectile => !projectile.delete);
 }
 const _checkCollisions = (round) => {}
+
+const _getUpdate = (round) => {
+    const {tanks, projectiles, stats} = round;
+
+    const tankUpdateObj = [];
+    Object.keys(tanks).forEach(key => {
+        const {displayName, team, pos, health} = tanks[key];
+        tankUpdateObj.push({displayName, team, pos, health});
+    })
+
+    const projectileUpdateObj = [];
+    Object.keys(projectiles).forEach(key => {
+        const {x,y,t} = projectiles[key];
+        projectileUpdateObj.push({x,y,t});
+    })
+
+    const newUpdateString = JSON.stringify({tanks:tankUpdateObj, projectiles:projectileUpdateObj, stats})
+    if(round.updateString == newUpdateString) return false;
+    
+    round.updateString = newUpdateString;
+    return newUpdateString;
+}
 
 module.exports = {Round}

@@ -3,10 +3,12 @@ src/server/Game/RoundController.js
 RoundController object containing all functions & intervals for game rounds.
 */
 
-const { Round } = require("./Round");
+const {Round} = require("./Round");
+const Parameters = require("../../data");
 
-function RoundController(){
+function RoundController(io){
     this.round = null;
+    this.io = io;
 
     this.createRound = () => {return _createRound(this)}
 }
@@ -14,6 +16,7 @@ function RoundController(){
 const _createRound = (controller) => {
     controller.round = new Round();
     _initPhysics(controller);
+    _initUpdates(controller);
 
     return controller.round;
 }
@@ -26,6 +29,14 @@ const _initPhysics = (controller) => {
         round.moveProjectiles();
         round.checkCollisions();
     }, physicsLimit)
+}
+
+const _initUpdates = (controller) => {
+    const updateLimit = 1000/10;
+    setInterval(() => {
+        const updateString = controller.round.getUpdate();
+        if(updateString) controller.io.emit(Parameters.SOCKET_PROTOCOL_SND.GAME_DATA, updateString)
+    }, updateLimit);
 }
 
 module.exports = {RoundController};

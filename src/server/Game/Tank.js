@@ -58,13 +58,12 @@ const _updatePos = (tank) => {
 
     const forward = w - s;
     const rotate_tank = d - a;
-    const rotate_turret = theta_turret - m;
-    
+    const rotate_turret = m - theta_turret;
+
     if(forward){
         //These values don't seem to be behaving correctly, TODO: fix
         tank.pos.x += SPD * Math.sin(theta_tank) * (forward > 0 ? -1 : 1);
         tank.pos.y -= SPD * Math.cos(theta_tank) * (forward > 0 ? 1 : -1);
-        console.log(tank.pos)
     }
     if(rotate_tank){
         const max_tank_rotate = RTS * (rotate_tank > 0 ? 1 : -1);
@@ -72,11 +71,9 @@ const _updatePos = (tank) => {
         if(final_val >= radians){final_val -= radians}
         else if(final_val < 0){final_val += radians}
         tank.pos.theta_tank = final_val;
-        
-        console.log(tank.pos)
     }
     if(rotate_turret){
-
+        tank.pos.theta_turret += Math.min(rotate_turret, RTS * (rotate_turret > 0 ? 1 : -1));
     }
    
 }
