@@ -7,6 +7,8 @@ const Parameters = require('../data');
 const socketProtocol = (window.location.protocol.includes('https')) ? 'wss' : 'ws';
 const socket = io(`${socketProtocol}://${window.location.host}`, { reconnection: false });
 
+const tempIDData = `${Date.now()}`;
+
 const connectedPromise = new Promise(resolve => {
     socket.on('connect', () => {
       console.log('Connected to server!');
@@ -32,7 +34,7 @@ document.addEventListener("mousedown", logMouseDown);
 
 function handleGameData(data){
     console.log(data);
-    upsertObjects(JSON.parse(data), "ThetaBird");
+    upsertObjects(JSON.parse(data), tempIDData);
 }
 
 let input = {
@@ -87,8 +89,8 @@ const sendInputToServer = throttle(limit, () => {
 
 const joinGameRequest = () => {
     const data = {
-        displayName:"ThetaBird",
-        uid:"12345",
+        displayName:tempIDData,
+        uid:tempIDData,
     }
     socket.emit(Parameters.SOCKET_PROTOCOL_RCV.JOIN_GAME, data);
     document.addEventListener("keypress", logKeyDown);

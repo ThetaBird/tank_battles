@@ -34,7 +34,7 @@ let addedProjectiles = [];
 const upsertObjects = (data, displayName) => {
     const {tanks, projectiles} = data;
 
-    const me = tanks[0]//.find(tank => tank.displayName == displayName);
+    const me = tanks.find(tank => tank.displayName == displayName);
     if(!me) return;
     const {x,y} = me.pos;
 
@@ -50,20 +50,24 @@ const upsertTanks = (tanks, x, y) => {
             tank.body = new THREE.Mesh(testGeometry, material);
             tank.turret = new THREE.Mesh(turretGeometry, grey_material);
 
+            const group = new THREE.Group();
+            group.add(tank.body)
+            group.add(tank.turret);
+
+            tank.group = group;
+
             addedTank = tank;
             addedTanks.push(tank);
-            scene.add(tank.body);
-            scene.add(tank.turret);
+
+            scene.add(group);   
         }
         
-        const {body, turret} = addedTank;
+        const {group, body, turret} = addedTank;
 
-        body.position.setX(x - tank.pos.x);
-        body.position.setY(y - tank.pos.y);
+        group.position.setX(x - tank.pos.x);
+        group.position.setY(y - tank.pos.y);
+
         body.rotation.z = tank.pos.theta_tank * -1;
-
-        turret.position.setX(x - tank.pos.x);
-        turret.position.setY(y - tank.pos.y);
         turret.rotation.z = tank.pos.theta_turret * -1;
 
         
@@ -73,7 +77,7 @@ const upsertTanks = (tanks, x, y) => {
 
 
 const upsertProjectiles = (projectiles, x, y) => {
-    console.log(projectiles);
+    //console.log(projectiles);
     const expiredProjectiles = addedProjectiles.filter(p => !projectiles.find(_p => _p.id == p.id));
     expiredProjectiles.forEach(p => scene.remove(p.body))
 

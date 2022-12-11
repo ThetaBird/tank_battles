@@ -4,6 +4,7 @@ function SocketRequestHandler(socket, Session){
     this.socket = socket;
     this.Session = Session;
     this.uid = null;
+    this.displayName = null;
 
     const {JOIN_GAME, GAME_UPDATE, USER_INPUT, SPAWN, FIRE} = Parameters.SOCKET_PROTOCOL_RCV;
 
@@ -21,6 +22,8 @@ function SocketRequestHandler(socket, Session){
 const join_game = (handler, data) => {
     const {Session, socket, init_game_RH} = handler;
     handler.uid = data.uid;
+    handler.displayName = data.displayName;
+    console.log(socket.id)
     Session.addUser(socket.id, data)
     init_game_RH();
 }       
@@ -36,8 +39,8 @@ const game_input = (handler, data) => {
 }
 
 const game_spawn = (handler, type) => {
-    const {Session, uid} = handler;
-    Session.spawnTank({uid, type});
+    const {Session, uid, displayName} = handler;
+    Session.spawnTank({uid, type, displayName});
 
 }
 

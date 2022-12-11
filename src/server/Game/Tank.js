@@ -12,7 +12,7 @@ const minRadians = radians/4;
 const maxRadians = radians - minRadians;
 
 function Tank(type, displayName){
-    console.log({type});
+    console.log({type, displayName});
     this.displayName = displayName;
     this.constants = Parameters.TANK_CONSTANTS[type];
     if(!this.constants) return;
