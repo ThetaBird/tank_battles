@@ -18,6 +18,8 @@ const _createRound = (controller) => {
     _initPhysics(controller);
     _initUpdates(controller);
 
+    controller.round.spawnTank({uid:"dummy",displayName:"dummy",type:Parameters.TANK_TYPES.RECO})
+
     return controller.round;
 }
 
@@ -32,7 +34,7 @@ const _initPhysics = (controller) => {
 }
 
 const _initUpdates = (controller) => {
-    const updateLimit = 1000/10;
+    const updateLimit = 1000/60;
     setInterval(() => {
         const updateString = controller.round.getUpdate();
         if(updateString) controller.io.emit(Parameters.SOCKET_PROTOCOL_SND.GAME_DATA, updateString)

@@ -31,29 +31,29 @@ module.exports = Object.freeze({
     TANK_CONSTANTS: {
         RECO:{
             HLT:100,
-            SPD:1,
+            SPD:.5,
             DMG:40,
-            RNG:100,
+            RNG:50,
             RLD:1000, //ms
-            RTS:.3,
+            RTS:.03,
         },
         SNIP:{
             UID:2,
             HLT:50,
-            SPD:.75,
+            SPD:.35,
             DMG:200,
-            RNG:200,
+            RNG:100,
             RLD:2000,
-            RTS:.1,
+            RTS:.01,
         },
         TENC:{
             UID:3,
             HLT:150,
-            SPD:.5,
+            SPD:.25,
             DMG:80,
-            RNG:120,
+            RNG:60,
             RLD:1500,
-            RTS:.2,
+            RTS:.02,
         }
     },
 });

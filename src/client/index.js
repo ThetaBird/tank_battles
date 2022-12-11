@@ -31,6 +31,7 @@ document.addEventListener("mousemove", logMouseMove);
 document.addEventListener("mousedown", logMouseDown);
 
 function handleGameData(data){
+    console.log(data);
     upsertObjects(JSON.parse(data), "ThetaBird");
 }
 
@@ -52,12 +53,11 @@ function logKeyUp(e){
     tryToggleKey(e.key, 0) ? sendInputToServer() : {};
 }
 
-const tpi = Math.PI * 2;
 function logMouseMove(e){
     const {clientX, clientY} = e;
     let m = Math.atan2(clientX - window.innerWidth / 2, window.innerHeight / 2 - clientY) + Math.PI;
     input.m = m;
-    console.log(m);
+    //console.log(m);
     sendInputToServer();
 }
 

@@ -60,8 +60,8 @@ const _getUpdate = (round) => {
 
     const projectileUpdateObj = [];
     Object.keys(projectiles).forEach(key => {
-        const {x,y,t} = projectiles[key];
-        projectileUpdateObj.push({x,y,t});
+        const {x,y,t,id} = projectiles[key];
+        projectileUpdateObj.push({x,y,t,id});
     })
 
     const newUpdateString = JSON.stringify({tanks:tankUpdateObj, projectiles:projectileUpdateObj, stats})

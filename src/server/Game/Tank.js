@@ -7,6 +7,7 @@ Author: Max Jikharev
 
 const Parameters = require('../../data');
 const radians = Math.PI * 2;
+const radian = Math.PI;
 const minRadians = radians/4;
 const maxRadians = radians - minRadians;
 
@@ -60,12 +61,8 @@ const _updatePos = (tank) => {
 
     const forward = w - s;
     const rotate_tank = d - a;
-    //console.log({m});
-    //const clampedM = m.clamp(minRadians, maxRadians);
-    //console.log({clampedM});
-    //const rt = clampedM - theta_turret;
-    //const rotate_turret = (rt > maxRadians || rt < minRadians) ? 0 : rt;
     const rotate_turret = m - theta_turret;
+
     if(forward){
         //These values don't seem to be behaving correctly, TODO: fix
         tank.pos.x += SPD * Math.sin(theta_tank) * (forward > 0 ? -1 : 1);
@@ -74,21 +71,17 @@ const _updatePos = (tank) => {
     if(rotate_tank){
         const max_tank_rotate = RTS * (rotate_tank > 0 ? 1 : -1);
         let final_val = theta_tank + max_tank_rotate;
-        if(final_val >= radians){final_val -= radians}
-        else if(final_val < 0){final_val += radians}
+        if(final_val >= radian){final_val -= radians}
+        else if(final_val < radian * -1 ){final_val += radians}
         tank.pos.theta_tank = final_val;
+        console.log(theta_tank)
     }
    
     if(rotate_turret){
-        //console.log({rotate_turret})
-        if(rotate_turret > 0){
-            tank.pos.theta_turret += Math.min(rotate_turret, RTS);
-            //tank.pos.theta_turret = Math.min(tank.pos.theta_turret, radians/3)
-        }else{
-            tank.pos.theta_turret += Math.max(rotate_turret, RTS * -1);
-            //tank.pos.theta_turret = Math.max(tank.pos.theta_turret, -1 * radians/3)
-        }
-        tank.pos.theta_turret = tank.pos.theta_turret.clamp(minRadians, maxRadians);
+        if(rotate_turret > 0){tank.pos.theta_turret += Math.min(rotate_turret, RTS);
+        }else{tank.pos.theta_turret += Math.max(rotate_turret, RTS * -1);}
+
+        tank.pos.theta_turret = tank.pos.theta_turret.clamp(minRadians + theta_tank, maxRadians + theta_tank);
     }
    
 }
@@ -110,8 +103,8 @@ Returns false if cooldown active, {x, y, theta_turret, DMG} otherwise.
 */
 const _spawnProjectile = (tank) => {
     const {RLD, DMG, RNG} = tank.constants;
-    if(RLD > Date.now() - tank.lastProjectile) return false;
-
+    if(RLD > (Date.now() - tank.lastProjectile)) return false;
+    tank.lastProjectile = Date.now();
     const {x, y, theta_turret} = tank.pos;
     return {x, y, t:theta_turret, d:DMG, r:RNG};
 }

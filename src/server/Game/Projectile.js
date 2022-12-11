@@ -1,6 +1,10 @@
+let counter = 1;
+
 function Projectile(uid, data){
     //Player
     this.player = uid;
+    this.id = counter++;
+
     const {x,y,t,d,r} = data;
 
     this.x = x;
@@ -12,8 +16,8 @@ function Projectile(uid, data){
 
     this.delete = false;
 
-    this.xIncrement = Math.sin(t) * d;
-    this.yIncrement = Math.cos(t) * d;
+    this.xIncrement = Math.sin(t) * d * .05;
+    this.yIncrement = Math.cos(t) * d * .05;
 
     //For future anti-friendly-fire functionality
     //this.team = 0;
@@ -29,7 +33,7 @@ const _updatePos = (projectile) => {
     projectile.x += projectile.xIncrement;
     projectile.y += projectile.yIncrement;
 
-    projectile.r -= 10;
+    projectile.r -= 1;
     if(projectile.r <= 0) projectile.delete = true;
 }
 
