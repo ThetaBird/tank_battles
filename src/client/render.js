@@ -1,5 +1,6 @@
 const THREE = require('three');
-const { arraySlice } = require('three/src/animation/AnimationUtils');
+const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader') 
+const { OrbitControls } = require('three/examples/jsm/controls/OrbitControls') 
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
@@ -10,18 +11,49 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 camera.position.setZ(30);
 
+const controls = new OrbitControls(camera, renderer.domElement)
+controls.enableDamping = true
+
+const geometry = new THREE.PlaneGeometry( 1, 1 );
+const planeMaterial = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+const plane = new THREE.Mesh( geometry, planeMaterial );
+
+scene.add( plane );
+
+
 const testGeometry = new THREE.BoxGeometry(2.5,1,1);
 const turretGeometry = new THREE.BoxGeometry(1,10,1);
 const bulletGeometry = new THREE.SphereGeometry(0.1, 20, 20);
 
 const material = new THREE.MeshStandardMaterial({color: 0xff6347});
 const grey_material = new THREE.MeshStandardMaterial({color: 0x333333});
+const white_material = new THREE.MeshStandardMaterial({color: 0xcccccc});
 //const mesh = new THREE.Mesh(testGeometry, material);
 
 const pointLight = new THREE.PointLight(0xffccff);
 pointLight.position.set(20, 20, 20);
 
 const ambientLight = new THREE.AmbientLight(0xccffcc);
+
+const objLoader = new OBJLoader();
+const tankObjects = {};
+
+objLoader.load(
+    'resources/test.obj',
+    (object) => {
+        // (object.children[0] as THREE.Mesh).material = material
+        object.traverse(function (child) {
+            console.log(child)
+            if(child.type != "Mesh") return;
+            if(["Body1","Body2"].includes(child.name)) child.material = grey_material;
+            else if(["Body3"].includes(child.name)) child.material = white_material;
+            else child.material = material;
+        })
+        
+        object.scale.setScalar(0.02);
+        tankObjects.RECO = object;
+    }
+)
 
 
 //scene.add(mesh);
@@ -47,12 +79,12 @@ const upsertTanks = (tanks, x, y) => {
         //console.log(tank.pos.theta_turret);
         let addedTank = addedTanks.find(addedT => addedT.displayName == tank.displayName);
         if(!addedTank){
-            tank.body = new THREE.Mesh(testGeometry, material);
-            tank.turret = new THREE.Mesh(turretGeometry, grey_material);
+            tank.body = tankObjects.RECO.clone()//new THREE.Mesh(testGeometry, material);
+            //tank.turret = new THREE.Mesh(turretGeometry, grey_material);
 
             const group = new THREE.Group();
             group.add(tank.body)
-            group.add(tank.turret);
+            //group.add(tank.turret);
 
             tank.group = group;
 
@@ -66,9 +98,12 @@ const upsertTanks = (tanks, x, y) => {
 
         group.position.setX(x - tank.pos.x);
         group.position.setY(y - tank.pos.y);
+        
+        plane.position.setX(tank.pos.x);
+        plane.position.setY(tank.pos.y);
 
         body.rotation.z = tank.pos.theta_tank * -1;
-        turret.rotation.z = tank.pos.theta_turret * -1;
+       // turret.rotation.z = tank.pos.theta_turret * -1;
 
         
     }
@@ -101,7 +136,7 @@ const upsertProjectiles = (projectiles, x, y) => {
 
 const animate = () => {
     requestAnimationFrame(animate);
-
+    controls.update()
     renderer.render(scene, camera);
 }
 

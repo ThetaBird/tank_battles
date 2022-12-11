@@ -53,7 +53,6 @@ const game_spawn = (handler, type) => {
     console.log("SPAWN")
     const {Session, uid, displayName} = handler;
     Session.spawnTank({uid, type, displayName});
-
 }
 
 const game_fire = (handler) => {

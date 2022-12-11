@@ -31,8 +31,8 @@ function Tank(type, displayName){
     this.lastProjectile = new Date();
 
     this.pos = {
-        x:0,
-        y:0,
+        x:Math.random() * 20,
+        y:Math.random() * 20,
         theta_turret:0,
         theta_tank:0,
     };
