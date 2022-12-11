@@ -4,11 +4,33 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const {SocketRequestHandler} = require('./Sesssion/SocketRequest');
 const {SessionController} = require("./Sesssion/SessionController");
+const {getGoogleAuthURL} = require("./Google/OAuth");
+
 
 const app = express();
+const authURL = getGoogleAuthURL();
+/*
 const publicPath = path.resolve(__dirname, "../../public");
 app.use(express.static(publicPath));
 app.use(bodyParser.urlencoded({ extended: false }));
+*/
+
+app.set("views", path.resolve(__dirname, "../../public"));
+app.use(express.static(path.join(__dirname, "../../public")));
+app.use(express.json());
+app.use(express.urlencoded());
+app.set("view engine", "ejs");
+
+app.get("/", (req, res) => {
+    const {code} = req.query;
+    return res.render("login", {authURL});
+
+});
+
+app.get("/play", (req, res) => {
+    res.render("game", {authURL});
+});
+
 
 const PORT = process.env.PORT || 8080;
 const server = app.listen(PORT);

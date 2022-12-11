@@ -1,4 +1,6 @@
 const Parameters = require('../../data');
+const {getGoogleUser} = require('../Google/OAuth');
+
 
 function SocketRequestHandler(socket, Session){
     this.socket = socket;
@@ -19,13 +21,22 @@ function SocketRequestHandler(socket, Session){
     }
 }
 
-const join_game = (handler, data) => {
+const join_game = async (handler, data) => {
     const {Session, socket, init_game_RH} = handler;
-    handler.uid = data.uid;
+    const code = data.code;
+    let user;
+    try{user = await getGoogleUser({code})}catch(e){}
+
+    if(!user) return handler.socket.emit(Parameters.SOCKET_PROTOCOL_SND.UNAUTH)
+
+    data.uid = user.id;
     handler.displayName = data.displayName;
-    console.log(socket.id)
+    handler.uid = data.uid;
+    
     Session.addUser(socket.id, data)
     init_game_RH();
+
+    handler.socket.emit(Parameters.SOCKET_PROTOCOL_SND.AUTH);
 }       
 
 const game_update = (handler, data) => {
@@ -39,6 +50,7 @@ const game_input = (handler, data) => {
 }
 
 const game_spawn = (handler, type) => {
+    console.log("SPAWN")
     const {Session, uid, displayName} = handler;
     Session.spawnTank({uid, type, displayName});
 

@@ -36,7 +36,7 @@ const _addUser = (controller, id, data) => {
         d:0,
         a:0,
     }
-
+    console.log(controller.users);
     //append to team if not already in one
     const {a,b} = controller.teams;
     if(a.includes(uid) || b.includes(uid)) return;

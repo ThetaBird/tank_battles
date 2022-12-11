@@ -20,6 +20,8 @@ module.exports = Object.freeze({
         STATS:"stats", //server sends leaderboard information for current game session
         RESPAWN:"respawn", //server tells client to respawn (show respawn menu)
         GAME_DATA:"data", //server sends active game data to client
+        UNAUTH:"unauthorized", //server tells client that oauth failed.
+        AUTH:"authorized", //server tells client that oauth passed.
     },
 
     TANK_TYPES: {

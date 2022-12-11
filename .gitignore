@@ -1,2 +1,2 @@
 /node_modules
-/dist
+/src/server/Google/oauth.keys.json

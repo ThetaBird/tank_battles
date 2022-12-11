@@ -19,6 +19,8 @@ const connectedPromise = new Promise(resolve => {
 const connect = () => (
     connectedPromise.then(() => {
         socket.on(Parameters.SOCKET_PROTOCOL_SND.GAME_DATA, handleGameData);
+        socket.on(Parameters.SOCKET_PROTOCOL_SND.UNAUTH, redirectToLogin);
+        socket.on(Parameters.SOCKET_PROTOCOL_SND.AUTH, () => spawnTankRequest(Parameters.TANK_TYPES.RECO));
         socket.on('disconnect', () => {console.log('Disconnected from server.')});
     })
   );
@@ -35,6 +37,10 @@ document.addEventListener("mousedown", logMouseDown);
 function handleGameData(data){
     console.log(data);
     upsertObjects(JSON.parse(data), tempIDData);
+}
+
+function redirectToLogin(){
+    window.location.href = "http://localhost:8080"
 }
 
 let input = {
@@ -88,9 +94,12 @@ const sendInputToServer = throttle(limit, () => {
 })
 
 const joinGameRequest = () => {
+    const {code} = window.localStorage;
+    if(!code) return window.location.href = "http://localhost:8080/"
+
     const data = {
         displayName:tempIDData,
-        uid:tempIDData,
+        code,
     }
     socket.emit(Parameters.SOCKET_PROTOCOL_RCV.JOIN_GAME, data);
     document.addEventListener("keypress", logKeyDown);
@@ -103,5 +112,4 @@ const spawnTankRequest = (type) => {
 
 
 joinGameRequest();
-const type = Parameters.TANK_TYPES.RECO;
-spawnTankRequest(type);
+
