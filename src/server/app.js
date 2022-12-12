@@ -48,7 +48,7 @@ Session.createRound()
 
 io.on('connection', (socket) => {
     console.log(socket.id);
-    SocketRequestHandler(socket, Session);
+    new SocketRequestHandler(socket, Session);
 });
 
 Number.prototype.clamp = function(min, max) {
