@@ -131,8 +131,8 @@ const upsertTanks = (tanks, x, y) => {
         group.position.setX(x - tank.pos.x);
         group.position.setY(y - tank.pos.y);
         
-        environment.position.setX(tank.pos.x);
-        environment.position.setY(tank.pos.y);
+        environment.position.setX(x);
+        environment.position.setY(y);
 
         object.body.rotation.z = tank.pos.theta_tank * -1;
         object.turret.rotation.z = tank.pos.theta_turret * -1 + Math.PI;
