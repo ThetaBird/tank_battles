@@ -14,13 +14,24 @@ camera.position.setZ(30);
 const controls = new OrbitControls(camera, renderer.domElement)
 controls.enableDamping = true
 
-const geometry = new THREE.PlaneGeometry( 100, 100 );
-const planeMaterial = new THREE.MeshBasicMaterial( {color: 0xaaaaaa, side: THREE.DoubleSide} );
+const loader = new THREE.TextureLoader();
+const texture = loader.load('resources/back.png');
+texture.wrapS = THREE.RepeatWrapping;
+texture.wrapT = THREE.RepeatWrapping;
+texture.magFilter = THREE.NearestFilter;
+const repeats = 300/10;
+texture.repeat.set(repeats, repeats);
 
-const boundsgeometry = new THREE.PlaneGeometry( 150, 150 );
+const geometry = new THREE.PlaneGeometry( 300, 300 );
+const planeMat = new THREE.MeshPhongMaterial({
+    map: texture,
+    side: THREE.DoubleSide,
+  });
+
+const boundsgeometry = new THREE.PlaneGeometry( 500, 500 );
 const boundsplaneMaterial = new THREE.MeshBasicMaterial( {color: 0x555555, side: THREE.DoubleSide} );
 
-const plane = new THREE.Mesh( geometry, planeMaterial );
+const plane = new THREE.Mesh( geometry, planeMat );
 const boundsplane = new THREE.Mesh( boundsgeometry, boundsplaneMaterial );
 
 const environment = new THREE.Group();
@@ -29,7 +40,7 @@ environment.add(boundsplane);
 
 scene.add( environment );
 
-boundsplane.position.setZ(-0.01);
+boundsplane.position.setZ(-0.1);
 
 const bulletGeometry = new THREE.SphereGeometry(0.2, 20, 20);
 
@@ -39,10 +50,12 @@ const grey_material = new THREE.MeshStandardMaterial({color: 0x333333});
 const white_material = new THREE.MeshStandardMaterial({color: 0xcccccc});
 //const mesh = new THREE.Mesh(testGeometry, material);
 
-const pointLight = new THREE.PointLight(0xffccff);
-pointLight.position.set(20, 20, 20);
+let playerColors = {}
 
-const ambientLight = new THREE.AmbientLight(0xccffcc);
+const pointLight = new THREE.PointLight(0xffccff,1,50);
+pointLight.position.set(20, 20, 2);
+
+const ambientLight = new THREE.AmbientLight(0xcccccc);
 
 const objLoader = new OBJLoader();
 const tankObjects = {
@@ -122,6 +135,13 @@ const upsertObjects = (data, displayName) => {
     upsertProjectiles(projectiles, lastCoords);
 }
 
+const setTurretColor = (turret, color) => {
+
+    const mat = playerColors[color] || new THREE.MeshStandardMaterial({color});
+    if(!playerColors[color]) playerColors[color] = material;
+    turret.children[1].material = mat;
+}
+
 const upsertTanks = (tanks, {x, y}) => {
     //console.log(tanks)
     const expiredTanks = allTanks.RECO.filter(t => !tanks.find(_t => _t.displayName == t.displayName));
@@ -129,6 +149,13 @@ const upsertTanks = (tanks, {x, y}) => {
         scene.remove(t.group);
     })
     allTanks.RECO = allTanks.RECO.filter(t => tanks.find(_t => _t.displayName == t.displayName));
+
+    const expiredDeadTanks = allTanks.DEAD.filter(t => !tanks.find(_t => _t.t == t.t));
+    expiredDeadTanks.forEach(t => {
+        scene.remove(t.group);
+    })
+    allTanks.DEAD = allTanks.DEAD.filter(t => tanks.find(_t => _t.t == t.t));
+
 
     let addedTank;
     for(const tank of tanks){
@@ -146,6 +173,8 @@ const upsertTanks = (tanks, {x, y}) => {
                 body: tankObjects[tankType].body.clone(),
                 turret: tankObjects[tankType].turret.clone(),
             };
+
+            setTurretColor(tank.object.turret, tank.color)
 
             const group = new THREE.Group();
             group.add(tank.object.body)

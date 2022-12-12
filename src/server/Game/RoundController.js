@@ -21,6 +21,8 @@ const _createRound = (controller) => {
     controller.round.spawnTank({uid:"dummy",displayName:"dummy",type:Parameters.TANK_TYPES.RECO})
     setInterval(() => controller.round.fireProjectile("dummy"), 2000);
 
+    setInterval(() => controller.round.cleanCorpses(), 10000);
+
     return controller.round;
 }
 

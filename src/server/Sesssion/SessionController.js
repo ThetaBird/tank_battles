@@ -48,10 +48,7 @@ const _addUser = (controller, id, data) => {
 const _findUserFromSocketId = (controller, socket) => controller.users.find(user => user.socket == socket);
 
 //Methods for handling incoming client socket requests
-const _spawnTank = (controller, data) => {
-    controller.round.spawnTank(data);
-    console.log(controller.round)
-}
+const _spawnTank = (controller, data) => controller.round.spawnTank(data);
 const _updateTankInput = (controller, uid, data) => controller.round.updateTankInput(uid, data);
 const _fireProjectile = (controller, uid) => controller.round.fireProjectile(uid);
 const _destroyTank = (controller, uid) => controller.round.destroyTank(uid);

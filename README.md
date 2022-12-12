@@ -17,3 +17,11 @@ TODO
 ==> LOW PRIORITY <==
 - teams + colors
 - leaderboard
+
+
+SWITCHING FROM LOCALHOST TO VPS FOR MULTIPLAYER DEMO
+CAN'T RUN MULTI ON SUNLAB DUE TO SPACE CONTRAINTS
+
+- Change .env dev
+- Change public/login.js line 1 true -> false
+- Change src/data.js URL true -> false

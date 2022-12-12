@@ -8,6 +8,7 @@ Author: Max Jikharev
 
 const { Projectile } = require("./Projectile");
 const {Tank} = require("./Tank");
+const Parameters = require('../../data');
 
 function Round(){
     this.Constants = {
@@ -33,6 +34,7 @@ function Round(){
     this.checkCollisions = () => _checkCollisions(this);
 
     this.getUpdate = () => {return _getUpdate(this)};
+    this.cleanCorpses = () => _cleanCorpses(this);
 }
 
 //Handle client socket requests
@@ -44,8 +46,6 @@ const _destroyTank = (round, uid) => {
     if(!round.tanks[uid]) return;
     const {pos} = round.tanks[uid];
     round.deadTanks.push({ pos, t:Date.now()});
-    console.log(round.tanks);
-    console.log(round.deadTanks)
     delete round.tanks[uid];
 }
 
@@ -107,8 +107,8 @@ const _getUpdate = (round) => {
 
     const tankUpdateObj = [...round.deadTanks];
     Object.keys(tanks).forEach(key => {
-        const {displayName, team, pos, health} = tanks[key];
-        tankUpdateObj.push({displayName, team, pos, health});
+        const {displayName, team, pos, health, color} = tanks[key];
+        tankUpdateObj.push({displayName, team, pos, health, color});
     })
 
     const projectileUpdateObj = [];
@@ -122,6 +122,11 @@ const _getUpdate = (round) => {
     
     round.updateString = newUpdateString;
     return newUpdateString;
+}
+
+const _cleanCorpses = (round) => {
+    let now = Date.now();
+    round.deadTanks = round.deadTanks.filter(tank => now - tank.t < Parameters.CORPSE_EXPIRY)
 }
 
 module.exports = {Round}

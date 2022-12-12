@@ -15,6 +15,8 @@ module.exports = Object.freeze({
         SPAWNLIMIT:1000/1,
     },
 
+    CORPSE_EXPIRY: 30000,
+
     //Client-to-server socket msg types
     SOCKET_PROTOCOL_RCV: {
         JOIN_GAME:"game", //client requests to join a game

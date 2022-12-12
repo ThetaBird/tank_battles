@@ -45,13 +45,11 @@ const game_update = (handler, data) => {
 }
 
 const game_input = (handler, data) => {
-    //console.log({data})
     const {Session, uid} = handler;
     Session.updateTankInput(uid, data);
 }
 
 const game_spawn = (handler, type) => {
-    console.log("SPAWN")
     const {Session, uid, displayName} = handler;
     Session.spawnTank({uid, type, displayName});
 }

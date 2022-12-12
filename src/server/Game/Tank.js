@@ -9,7 +9,7 @@ const Parameters = require('../../data');
 const radians = Math.PI * 2;
 const radian = Math.PI;
 
-const MAP_SIZE = 50;//distance from center to edge
+const MAP_SIZE = 150;//distance from center to edge
 
 function Tank(type, displayName){
     this.displayName = displayName;
@@ -28,6 +28,7 @@ function Tank(type, displayName){
 
     this.health = this.constants.HLT;
     this.lastProjectile = new Date();
+    this.color = `#${Math.floor(Math.random()*16777215).toString(16)}`,
 
     this.pos = {
         x:Math.random() * 20,
