@@ -1,7 +1,9 @@
+require("dotenv").config();
+const {ENV, PRODURL, PRODPORT, DEVURL, DEVPORT} = process.env;
+
 const {Server} = require("socket.io");
 const express = require("express");
 const path = require("path");
-const bodyParser = require("body-parser");
 const {SocketRequestHandler} = require('./Sesssion/SocketRequest');
 const {SessionController} = require("./Sesssion/SessionController");
 const {getGoogleAuthURL} = require("./Google/OAuth");
@@ -26,18 +28,11 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.set("view engine", "ejs");
 
-app.get("/", (req, res) => {
-    const {code} = req.query;
-    return res.render("login", {authURL});
-
-});
-
-app.get("/play", (req, res) => {
-    res.render("game", {authURL});
-});
+app.get("/", (req, res) => res.render("login", {authURL}));
+app.get("/play", (req, res) => res.render("game", {authURL}));
 
 
-const PORT = process.env.PORT || 8080;
+const PORT = ENV == "DEV" ? DEVPORT : PRODPORT;
 const server = app.listen(PORT);
 console.log(`Listening on port ${PORT}`);
 

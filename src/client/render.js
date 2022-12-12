@@ -11,8 +11,8 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 camera.position.setZ(30);
 
-const controls = new OrbitControls(camera, renderer.domElement)
-controls.enableDamping = true
+//const controls = new OrbitControls(camera, renderer.domElement)
+//controls.enableDamping = true
 
 const geometry = new THREE.PlaneGeometry( 100, 100 );
 const planeMaterial = new THREE.MeshBasicMaterial( {color: 0xaaaaaa, side: THREE.DoubleSide} );
@@ -31,9 +31,6 @@ scene.add( environment );
 
 boundsplane.position.setZ(-0.01);
 
-
-const testGeometry = new THREE.BoxGeometry(2.5,1,1);
-const turretGeometry = new THREE.BoxGeometry(1,10,1);
 const bulletGeometry = new THREE.SphereGeometry(0.2, 20, 20);
 
 const material = new THREE.MeshStandardMaterial({color: 0xff6347});
@@ -54,7 +51,7 @@ const tankObjects = {
     }
 };
 
-const obj = {o:null}
+
 async function loadOBJ(path,type){
     objLoader.load(
         path,
@@ -93,7 +90,6 @@ const upsertObjects = (data, displayName) => {
 
     const me = tanks.find(tank => tank.displayName == displayName);
     if(!me) return;
-    console.log(me);
     const {x,y} = me.pos;
 
     upsertTanks(tanks, x, y);
@@ -166,7 +162,7 @@ const upsertProjectiles = (projectiles, x, y) => {
 
 const animate = () => {
     requestAnimationFrame(animate);
-    controls.update()
+    //controls.update()
     renderer.render(scene, camera);
 }
 

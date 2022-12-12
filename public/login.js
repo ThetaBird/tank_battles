@@ -1,5 +1,4 @@
-
-const _URL = "http://lehighcse.us.to:8080";
+const _URL = (true) ? `http://localhost` : `http://cselehigh.us.to`;
 
 const url = window.location.href;
 console.log(url);

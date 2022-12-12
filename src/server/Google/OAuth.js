@@ -4,12 +4,15 @@ const axios = require("axios");
 
 const {web} = require("./oauth.keys.json");
 const {client_id, client_secret} = web;
-const Parameters = require("../../data");
+
+require("dotenv").config();
+const {ENV, PRODURL, PRODPORT, DEVURL, DEVPORT} = process.env;
+const _URL = ENV == "DEV" ? `${DEVURL}:${DEVPORT}` : `${PRODURL}:${PRODPORT}`;
 
 const oauth2Client = new google.auth.OAuth2(
   client_id,
   client_secret,
-  Parameters.URL
+  _URL
 );
 
 const getGoogleAuthURL = () => {

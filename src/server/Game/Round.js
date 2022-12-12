@@ -35,8 +35,14 @@ function Round(){
 
 //Handle client socket requests
 const _spawnTank = (round, {uid, type, displayName}) => round.tanks[uid] = new Tank(type, displayName); //TODO: Give initial x & y pos
-const _updateTankInput = (round, uid, input) => round.tanks[uid].input = input;
+
+const _updateTankInput = (round, uid, input) => {
+    if(!round.tanks[uid]) return;
+    round.tanks[uid].input = input;
+}
+
 const _fireProjectile = (round, uid) => {
+    if(!round.tanks[uid]) return;
     const projectileData = round.tanks[uid].spawnProjectile();
     if(projectileData) round.projectiles.push(new Projectile(uid, projectileData))
 }

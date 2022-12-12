@@ -6,7 +6,7 @@ Author: Max Jikharev
 */
 
 module.exports = Object.freeze({
-    URL:'http://lehighcse.us.to:8080',
+    URL: (true) ? `http://localhost` : `http://cselehigh.us.to`,
 
     //Client-to-server socket msg types
     SOCKET_PROTOCOL_RCV: {
