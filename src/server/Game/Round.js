@@ -34,7 +34,9 @@ function Round(){
 }
 
 //Handle client socket requests
-const _spawnTank = (round, {uid, type, displayName}) => round.tanks[uid] = new Tank(type, displayName); //TODO: Give initial x & y pos
+const _spawnTank = (round, {uid, type, displayName}) => {
+    if(!round.tanks[uid] || round.tanks[uid].displayName.startsWith("_")) round.tanks[uid] = new Tank(type, displayName);
+} //TODO: Give initial x & y pos
 
 const _updateTankInput = (round, uid, input) => {
     if(!round.tanks[uid]) return;

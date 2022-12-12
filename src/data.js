@@ -8,6 +8,13 @@ Author: Max Jikharev
 module.exports = Object.freeze({
     URL: (true) ? `http://localhost` : `http://cselehigh.us.to`,
 
+    NETWORK_LIMITS: {
+        FIRELIMIT:1000/10,
+        INPUTLIMIT:1000/60,
+        JOINLIMIT:1000/1,
+        SPAWNLIMIT:1000/1,
+    },
+
     //Client-to-server socket msg types
     SOCKET_PROTOCOL_RCV: {
         JOIN_GAME:"game", //client requests to join a game

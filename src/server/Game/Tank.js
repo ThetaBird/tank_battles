@@ -59,6 +59,8 @@ void Tank.prototype.updatePos()
 Runs on every physics cycle, updates tank pos based on perceived user input.
 */
 const _updatePos = (tank) => {
+    if(!tank || !tank.input || !tank.pos) return;
+
     const {w, s, d, a, m} = tank.input;
     const {theta_turret, theta_tank} = tank.pos;
     const {SPD, RTS} = tank.constants;
