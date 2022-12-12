@@ -37,6 +37,10 @@ function Tank(type, displayName){
         theta_tank:0,
     };
     
+    this.meta = {
+        momentum:0,
+    };
+
     this.input = {
         w:0, //up
         s:0, //down
@@ -58,16 +62,19 @@ const _updatePos = (tank) => {
     const {w, s, d, a, m} = tank.input;
     const {theta_turret, theta_tank} = tank.pos;
     const {SPD, RTS} = tank.constants;
+    const {meta} = tank;
 
     const forward = w - s;
+    meta.momentum = forward ? clamp(0.05 * forward + meta.momentum, -1, 1) : parseFloat((meta.momentum/1.15).toPrecision(2));
+    
     const rotate_tank = d - a;
     let rotate_turret = m - theta_turret;
 
-    if(forward){
-        //These values don't seem to be behaving correctly, TODO: fix
-        tank.pos.x += SPD * Math.sin(theta_tank) * (forward > 0 ? -1 : 1);
-        tank.pos.y -= SPD * Math.cos(theta_tank) * (forward > 0 ? 1 : -1);
+    if(parseInt(Math.abs(meta.momentum) + 0.9) || forward){
+        tank.pos.x += -1 * SPD * Math.sin(theta_tank) * meta.momentum;
+        tank.pos.y -= SPD * Math.cos(theta_tank) * meta.momentum;
     }
+
     if(rotate_tank){
         const max_tank_rotate = RTS * (rotate_tank > 0 ? 1 : -1);
         let final_val = theta_tank + max_tank_rotate;
@@ -79,7 +86,7 @@ const _updatePos = (tank) => {
     if(rotate_turret){
         const [d1, d2] = [m - theta_turret, radians - theta_turret + m].sort((a,b) => Math.abs(a) - Math.abs(b));
         const rt = d1;
-        
+
         if(rt > 0){tank.pos.theta_turret += Math.min(rt, (RTS + .1));
         }else{tank.pos.theta_turret += Math.max(rt, (RTS + .1) * -1);}
         
@@ -114,3 +121,7 @@ const _spawnProjectile = (tank) => {
 }
 
 module.exports = {Tank}
+
+const clamp = (num, min, max) => {
+    return Math.min(Math.max(num, min), max);
+}

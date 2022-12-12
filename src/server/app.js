@@ -45,7 +45,3 @@ io.on('connection', (socket) => {
     console.log(socket.id);
     new SocketRequestHandler(socket, Session);
 });
-
-Number.prototype.clamp = function(min, max) {
-    return Math.min(Math.max(this, min), max);
-};
