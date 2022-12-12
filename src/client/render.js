@@ -11,8 +11,8 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 camera.position.setZ(30);
 
-//const controls = new OrbitControls(camera, renderer.domElement)
-//controls.enableDamping = true
+const controls = new OrbitControls(camera, renderer.domElement)
+controls.enableDamping = true
 
 const geometry = new THREE.PlaneGeometry( 100, 100 );
 const planeMaterial = new THREE.MeshBasicMaterial( {color: 0xaaaaaa, side: THREE.DoubleSide} );
@@ -34,6 +34,7 @@ boundsplane.position.setZ(-0.01);
 const bulletGeometry = new THREE.SphereGeometry(0.2, 20, 20);
 
 const material = new THREE.MeshStandardMaterial({color: 0xff6347});
+const material2 = new THREE.MeshStandardMaterial({color: 0xcccccc});
 const grey_material = new THREE.MeshStandardMaterial({color: 0x333333});
 const white_material = new THREE.MeshStandardMaterial({color: 0xcccccc});
 //const mesh = new THREE.Mesh(testGeometry, material);
@@ -60,20 +61,23 @@ async function loadOBJ(path,type){
     objLoader.load(
         path,
         (object) => {
+            object.scale.setScalar(0.02);
+            const deadObject = object.clone();
+
             object.traverse(function (child) {
                 console.log(child)
                 if(child.type != "Mesh") return;
                 
-                if(["Body1","Body2"].includes(child.name)) child.material = grey_material;
-                else if(["Body3"].includes(child.name)) child.material = white_material;
-                else child.material = material;
+                if(["Body1","Body2"].includes(child.name)) {child.material = grey_material;}
+                else if(["Body3"].includes(child.name)) {child.material = material2;}
+                else {child.material = material;}
     
                 
             })
-            object.scale.setScalar(0.02);
+            
             tankObjects.RECO[type] = object;
 
-            const deadObject = object.clone();
+            
             deadObject.traverse(function (child) {
                 if(child.type != "Mesh") return;
                 child.material = grey_material;
@@ -119,7 +123,10 @@ const upsertObjects = (data, displayName) => {
 
 const upsertTanks = (tanks, {x, y}) => {
     const expiredTanks = addedTanks.filter(t => !tanks.find(_t => _t.displayName == t.displayName));
-    expiredTanks.forEach(t => scene.remove(t.body))
+    expiredTanks.forEach(t => {
+        scene.remove(t.object.turret);
+        scene.remove(t.object.body);
+    })
     addedTanks = addedTanks.filter(t => tanks.find(_t => _t.displayName == t.displayName));
 
     let addedTank;
@@ -193,7 +200,7 @@ const upsertProjectiles = (projectiles, {x, y}) => {
 
 const animate = () => {
     requestAnimationFrame(animate);
-    //controls.update()
+    controls.update()
     renderer.render(scene, camera);
 }
 
