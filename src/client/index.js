@@ -21,7 +21,7 @@ const connect = () => (
         socket.on(Parameters.SOCKET_PROTOCOL_SND.GAME_DATA, handleGameData);
         socket.on(Parameters.SOCKET_PROTOCOL_SND.UNAUTH, redirectToLogin);
         socket.on(Parameters.SOCKET_PROTOCOL_SND.AUTH, () => spawnTankRequest(Parameters.TANK_TYPES.RECO));
-        socket.on('disconnect', () => {console.log('Disconnected from server.'); location.reload()});
+        socket.on('disconnect', () => {console.log('Disconnected from server.'); redirectToLogin()});
     })
   );
 
@@ -34,14 +34,8 @@ document.addEventListener("keyup", logKeyUp);
 document.addEventListener("mousemove", logMouseMove);
 document.addEventListener("mousedown", logMouseDown);
 
-function handleGameData(data){
-    //console.log(data);
-    upsertObjects(JSON.parse(data), tempIDData);
-}
-
-function redirectToLogin(){
-    window.location.href = "http://localhost:8080"
-}
+function handleGameData(data){upsertObjects(JSON.parse(data), tempIDData);}
+function redirectToLogin(){window.location.href = Parameters.URL;}
 
 let input = {
     w:0,
@@ -95,7 +89,7 @@ const sendInputToServer = throttle(limit, () => {
 
 const joinGameRequest = () => {
     const {code} = window.localStorage;
-    if(!code) return window.location.href = "http://localhost:8080/"
+    if(!code) return window.location.href = Parameters.URL
 
     const data = {
         displayName:tempIDData,

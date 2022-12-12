@@ -1,7 +1,8 @@
 
+const _URL = "http://lehighcse.us.to:8080";
+
 const url = window.location.href;
 console.log(url);
-
 const getQuery = url.split('?')[1];
 if(getQuery){
     const params = getQuery.split('&');
@@ -15,6 +16,6 @@ if(getQuery){
         }
     }
 
-    window.location.href = 'http://localhost:8080/play';
+    window.location.href = `${_URL}/play`;
 }
 

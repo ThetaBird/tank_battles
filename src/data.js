@@ -6,6 +6,8 @@ Author: Max Jikharev
 */
 
 module.exports = Object.freeze({
+    URL:'http://lehighcse.us.to:8080',
+
     //Client-to-server socket msg types
     SOCKET_PROTOCOL_RCV: {
         JOIN_GAME:"game", //client requests to join a game

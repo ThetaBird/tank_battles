@@ -4,11 +4,12 @@ const axios = require("axios");
 
 const {web} = require("./oauth.keys.json");
 const {client_id, client_secret} = web;
+const {Parameters} = require("../../data");
 
 const oauth2Client = new google.auth.OAuth2(
   client_id,
   client_secret,
-  'http://localhost:8080'
+  Parameters.URL
 );
 
 const getGoogleAuthURL = () => {

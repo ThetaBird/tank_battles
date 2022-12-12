@@ -75,33 +75,16 @@ const _updatePos = (tank) => {
         else if(final_val < radian * -1 ){final_val += radians}
         tank.pos.theta_tank = final_val;
         rotate_turret += max_tank_rotate;
-        
-        //console.log(theta_tank)
     }
-
-    //(Math.abs(m - theta_turret) < Math.abs(m - theta_turret - radians)) ? m - theta_turret : m - theta_turret - radians;
-    //const rt = (Math.abs(m-theta_turret) < radian) ? m-theta_turret)
-
     if(rotate_turret){
-        
-        //const [smaller, larger] = [m, theta_turret].sort((a,b) => a-b);
-        //console.log([smaller, larger])
-        //const [right, left] = (m < radian) ? [larger - smaller, smaller - radians + larger] : [ smaller - radians + larger, larger - smaller] ;
-        
-        //console.log("---- " + [right, left])
-        //const rt = (Math.abs(right) > Math.abs(left)) ? -1 * left : right;
-
         const [d1, d2] = [m - theta_turret, radians - theta_turret + m].sort((a,b) => Math.abs(a) - Math.abs(b));
-        console.log(d1, d2);
-
         const rt = d1;
-
+        
         if(rt > 0){tank.pos.theta_turret += Math.min(rt, (RTS + .1));
         }else{tank.pos.theta_turret += Math.max(rt, (RTS + .1) * -1);}
         
         if(tank.pos.theta_turret > radians) tank.pos.theta_turret -= radians;
-    else if(tank.pos.theta_turret < 0) tank.pos.theta_turret += radians;
-        //tank.pos.theta_turret = tank.pos.theta_turret.clamp(minRadians + theta_tank, maxRadians + theta_tank);
+        else if(tank.pos.theta_turret < 0) tank.pos.theta_turret += radians;
     }
     
    
