@@ -8,11 +8,10 @@ Author: Max Jikharev
 const Parameters = require('../../data');
 const radians = Math.PI * 2;
 const radian = Math.PI;
-const minRadians = radians/4;
-const maxRadians = radians - minRadians;
+
+const MAP_SIZE = 50;//distance from center to edge
 
 function Tank(type, displayName){
-    console.log({type, displayName});
     this.displayName = displayName;
     this.constants = Parameters.TANK_CONSTANTS[type];
     if(!this.constants) return;
@@ -39,6 +38,7 @@ function Tank(type, displayName){
     
     this.meta = {
         momentum:0,
+        dead:false,
     };
 
     this.input = {
@@ -64,12 +64,15 @@ const _updatePos = (tank) => {
     const {SPD, RTS} = tank.constants;
     const {meta} = tank;
 
+    if(meta.dead) return;
+
     const forward = w - s;
     meta.momentum = forward ? clamp(0.05 * forward + meta.momentum, -1, 1) : parseFloat((meta.momentum/1.15).toPrecision(2));
     
     const rotate_tank = d - a;
     let rotate_turret = m - theta_turret;
 
+    
     if(parseInt(Math.abs(meta.momentum) + 0.9) || forward){
         tank.pos.x += -1 * SPD * Math.sin(theta_tank) * meta.momentum;
         tank.pos.y -= SPD * Math.cos(theta_tank) * meta.momentum;
@@ -94,7 +97,8 @@ const _updatePos = (tank) => {
         else if(tank.pos.theta_turret < 0) tank.pos.theta_turret += radians;
     }
     
-   
+    if(Math.abs(tank.pos.x) > MAP_SIZE || Math.abs(tank.pos.y) > MAP_SIZE) return tank.removeHealth(1);
+    return true;
 }
 
 /*
@@ -104,7 +108,8 @@ Returns false if health remains above 0, true otherwise.
 */
 const _removeHealth = (tank, amt) => {
     tank.health -= amt;
-    return (health <= 0);
+    if(tank.health <= 0 && !tank.meta.dead){tank.displayName = `_${tank.displayName}`; tank.meta.dead = true; return false;}
+    return true;
 }
 
 /*
@@ -113,6 +118,7 @@ Runs when client requests to shoot. Checks if reload cooldown is active.
 Returns false if cooldown active, {x, y, theta_turret, DMG} otherwise.
 */
 const _spawnProjectile = (tank) => {
+    if(tank.meta.dead) return false;
     const {RLD, DMG, RNG} = tank.constants;
     if(RLD > (Date.now() - tank.lastProjectile)) return false;
     tank.lastProjectile = Date.now();

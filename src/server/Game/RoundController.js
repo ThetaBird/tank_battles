@@ -6,7 +6,7 @@ RoundController object containing all functions & intervals for game rounds.
 const {Round} = require("./Round");
 const Parameters = require("../../data");
 
-function RoundController(io){
+function RoundController(io, sessionController){
     this.round = null;
     this.io = io;
 

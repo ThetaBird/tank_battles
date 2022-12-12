@@ -46,8 +46,12 @@ const ambientLight = new THREE.AmbientLight(0xccffcc);
 const objLoader = new OBJLoader();
 const tankObjects = {
     RECO:{
-        body:new THREE.Group(),
-        turret:new THREE.Group()
+        body:null,
+        turret:null,
+    },
+    DEAD:{
+        body:null,
+        turret:null,
     }
 };
 
@@ -68,6 +72,14 @@ async function loadOBJ(path,type){
             })
             object.scale.setScalar(0.02);
             tankObjects.RECO[type] = object;
+
+            const deadObject = object.clone();
+            deadObject.traverse(function (child) {
+                if(child.type != "Mesh") return;
+                child.material = grey_material;
+            })
+            tankObjects.DEAD[type] = deadObject;
+            
         }
     )
 }
@@ -83,32 +95,51 @@ scene.add(pointLight, ambientLight);
 
 
 let addedTanks = [];
+let deadTanks = [];
 let addedProjectiles = [];
 
+let lastCoords = {
+    x:0,
+    y:0
+}
 const upsertObjects = (data, displayName) => {
     const {tanks, projectiles} = data;
 
     const me = tanks.find(tank => tank.displayName == displayName);
-    if(!me) return;
-    const {x,y} = me.pos;
 
-    upsertTanks(tanks, x, y);
-    upsertProjectiles(projectiles, x, y);
+    if(me){
+        const {x,y} = me.pos;
+        lastCoords.x = x; lastCoords.y = y;
+    }
+    
+
+    upsertTanks(tanks, lastCoords);
+    upsertProjectiles(projectiles, lastCoords);
 }
 
-const upsertTanks = (tanks, x, y) => {
+const upsertTanks = (tanks, {x, y}) => {
+    const expiredTanks = addedTanks.filter(t => !tanks.find(_t => _t.displayName == t.displayName));
+    expiredTanks.forEach(t => scene.remove(t.body))
+    addedTanks = addedTanks.filter(t => tanks.find(_t => _t.displayName == t.displayName));
+
+    let addedTank;
     for(const tank of tanks){
-        //console.log(tank.pos.theta_turret);
-        let addedTank = addedTanks.find(addedT => addedT.displayName == tank.displayName);
+        let tankType;
+        console.log(tank.displayName)
+        if(tank.displayName.startsWith("_")){ //dead tank
+            tankType = "DEAD";
+            addedTank = [...deadTanks].reverse().find(deadT => (deadT.displayName == tank.displayName));
+        }else{
+            tankType = "RECO";
+            addedTank = addedTanks.find(addedT => (addedT.displayName == tank.displayName));
+        }
+
+        
         if(!addedTank){
             tank.object = {
-                body: tankObjects.RECO.body.clone(),//new THREE.Mesh(testGeometry, material);,
-                turret: tankObjects.RECO.turret.clone(),
+                body: tankObjects[tankType].body.clone(),
+                turret: tankObjects[tankType].turret.clone(),
             };
-
-            const {body, turret} = tank.object;
-            //body.scale.setScalar(0.02);
-            //turret.scale.setScalar(0.02);
 
             const group = new THREE.Group();
             group.add(tank.object.body)
@@ -139,7 +170,7 @@ const upsertTanks = (tanks, x, y) => {
 
 
 
-const upsertProjectiles = (projectiles, x, y) => {
+const upsertProjectiles = (projectiles, {x, y}) => {
     //console.log(projectiles);
     const expiredProjectiles = addedProjectiles.filter(p => !projectiles.find(_p => _p.id == p.id));
     expiredProjectiles.forEach(p => scene.remove(p.body))
