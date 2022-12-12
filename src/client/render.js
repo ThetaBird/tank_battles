@@ -1,6 +1,7 @@
 const THREE = require('three');
 const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader') 
 const { OrbitControls } = require('three/examples/jsm/controls/OrbitControls'); 
+const TextSprite = require('@seregpie/three.text-sprite');
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
@@ -11,8 +12,8 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 camera.position.setZ(30);
 
-const controls = new OrbitControls(camera, renderer.domElement)
-controls.enableDamping = true
+//const controls = new OrbitControls(camera, renderer.domElement)
+//controls.enableDamping = true
 
 const loader = new THREE.TextureLoader();
 const texture = loader.load('resources/back.png');
@@ -69,6 +70,27 @@ const tankObjects = {
     }
 };
 
+const createText = (text, health) => {
+    const nameText = new TextSprite({
+        alignment: 'left',
+        color: '#1c1c1c',
+        fontFamily: 'Roboto, Arial, sans-serif',
+        fontSize: 1,
+        fontStyle: 'bold',
+        text
+      });
+
+    const healthText = new TextSprite({
+        alignment: 'left',
+        color: '#1c1c1c',
+        fontFamily: 'Roboto, Arial, sans-serif',
+        fontSize: 1,
+        fontStyle: 'bold',
+        text:`${health}`
+      });
+
+    return {nameText, healthText}
+}
 
 async function loadOBJ(path,type){
     objLoader.load(
@@ -109,6 +131,7 @@ loadOBJ('/resources/testTurret.obj',"turret")
 scene.add(pointLight, ambientLight);
 
 
+
 let allTanks = {
     RECO:[],
     DEAD:[]    
@@ -120,10 +143,10 @@ let lastCoords = {
     x:0,
     y:0
 }
-const upsertObjects = (data, displayName) => {
+const upsertObjects = (data, did) => {
     const {tanks, projectiles} = data;
 
-    const me = tanks.find(tank => tank.displayName == displayName);
+    const me = tanks.find(tank => tank.did == did);
 
     if(me){
         const {x,y} = me.pos;
@@ -144,11 +167,12 @@ const setTurretColor = (turret, color) => {
 
 const upsertTanks = (tanks, {x, y}) => {
     //console.log(tanks)
-    const expiredTanks = allTanks.RECO.filter(t => !tanks.find(_t => _t.displayName == t.displayName));
+    const expiredTanks = allTanks.RECO.filter(t => !tanks.find(_t => _t.did == t.did));
     expiredTanks.forEach(t => {
         scene.remove(t.group);
+        scene.remove(t.textGroup);
     })
-    allTanks.RECO = allTanks.RECO.filter(t => tanks.find(_t => _t.displayName == t.displayName));
+    allTanks.RECO = allTanks.RECO.filter(t => tanks.find(_t => _t.did == t.did));
 
     const expiredDeadTanks = allTanks.DEAD.filter(t => !tanks.find(_t => _t.t == t.t));
     expiredDeadTanks.forEach(t => {
@@ -165,7 +189,7 @@ const upsertTanks = (tanks, {x, y}) => {
             addedTank = allTanks.DEAD.find(deadT => (deadT.t == tank.t));
         }else{
             tankType = "RECO";
-            addedTank = allTanks.RECO.find(addedT => (addedT.displayName == tank.displayName));
+            addedTank = allTanks.RECO.find(addedT => (addedT.did == tank.did));
         }
         
         if(!addedTank){
@@ -174,11 +198,23 @@ const upsertTanks = (tanks, {x, y}) => {
                 turret: tankObjects[tankType].turret.clone(),
             };
 
+            if(!tank.t) {
+                tank.text = createText(tank.displayName, tank.health)
+                const textGroup = new THREE.Group();
+                textGroup.add(tank.text.nameText);
+                textGroup.add(tank.text.healthText);
+
+                tank.textGroup = textGroup;
+                scene.add(textGroup);   
+            }
+
             setTurretColor(tank.object.turret, tank.color)
 
             const group = new THREE.Group();
             group.add(tank.object.body)
             group.add(tank.object.turret);
+
+            
 
             tank.group = group;
 
@@ -188,7 +224,16 @@ const upsertTanks = (tanks, {x, y}) => {
             scene.add(group);   
         }
         
-        const {group, object} = addedTank;
+        const {group, object, textGroup} = addedTank;
+
+        if(textGroup){
+            textGroup.position.setX(x - tank.pos.x);
+            textGroup.position.setY(y - tank.pos.y - 3);
+
+            textGroup.children[1].position.setY(-1);
+            textGroup.children[1].text = `${tank.health}`;
+        }
+        
 
         group.position.setX(x - tank.pos.x);
         group.position.setY(y - tank.pos.y);
@@ -228,7 +273,7 @@ const upsertProjectiles = (projectiles, {x, y}) => {
 
 const animate = () => {
     requestAnimationFrame(animate);
-    controls.update()
+    //controls.update()
     renderer.render(scene, camera);
 }
 

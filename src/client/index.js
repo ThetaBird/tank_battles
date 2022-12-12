@@ -18,7 +18,7 @@ document.addEventListener("mousemove", logMouseMove);
 document.addEventListener("mousedown", logMouseDown);
 
 let input = {w:0,a:0,s:0,d:0,m:0}
-let joinData = {displayName:null, code:null};
+let joinData = {did:null, code:null};
 
 const keys = Object.keys(input);
 
@@ -48,7 +48,7 @@ const joinGameRequest = () => {
     const {code} = window.localStorage;
     if(!code) return window.location.href = Parameters.URL
 
-    joinData.displayName = tempIDData;
+    joinData.did = tempIDData;
     joinData.code = code;
     
     sendJoinToServer(joinData);

@@ -38,8 +38,8 @@ function Round(){
 }
 
 //Handle client socket requests
-const _spawnTank = (round, {uid, type, displayName}) => {
-    if(!round.tanks[uid]) round.tanks[uid] = new Tank(type, displayName);
+const _spawnTank = (round, {uid, type, did, displayName}) => {
+    if(!round.tanks[uid]) round.tanks[uid] = new Tank(type, did, displayName);
 } //TODO: Give initial x & y pos
 
 const _destroyTank = (round, uid) => {
@@ -76,6 +76,24 @@ const _moveProjectiles = (round) => {
     round.projectiles = round.projectiles.filter(projectile => !projectile.delete);
 }
 
+const __checkTankBodyCollision = (round) => {
+    Object.keys(round.tanks).forEach(uid => {
+        const tank = round.tanks[uid];
+        round.deadTanks.forEach(dead => {
+            if(estimateDistanceThreshold(dead, tank, 6) && distance(dead, tank) < 4){
+                tank.meta.momentum = (tank.meta.momentum) * -1.1;
+            }
+        })
+
+        Object.keys(round.tanks).forEach(uid2 => {
+            const tank2 = round.tanks[uid2];
+            if(uid != uid2 && estimateDistanceThreshold(tank2, tank, 6) && distance(tank2, tank) < 4){
+                tank.meta.momentum = (tank.meta.momentum) * -1.1;
+            }
+        })
+    })
+}
+
 const _checkCollisions = (round) => {
     let removeProjectileIDs = [];
     round.projectiles.forEach(projectile => {
@@ -100,6 +118,8 @@ const _checkCollisions = (round) => {
         
     })
     round.projectiles = round.projectiles.filter(projectile => !removeProjectileIDs.includes(projectile.id));
+    __checkTankBodyCollision(round);
+    
 }
 
 const _getUpdate = (round) => {
@@ -107,8 +127,8 @@ const _getUpdate = (round) => {
 
     const tankUpdateObj = [...round.deadTanks];
     Object.keys(tanks).forEach(key => {
-        const {displayName, team, pos, health, color} = tanks[key];
-        tankUpdateObj.push({displayName, team, pos, health, color});
+        const {displayName, did ,team, pos, health, color} = tanks[key];
+        tankUpdateObj.push({displayName, did ,team, pos, health, color});
     })
 
     const projectileUpdateObj = [];
@@ -116,6 +136,8 @@ const _getUpdate = (round) => {
         const {x,y,t,id} = projectiles[key];
         projectileUpdateObj.push({x,y,t,id});
     })
+
+    //console.log(tankUpdateObj);
 
     const newUpdateString = JSON.stringify({tanks:tankUpdateObj, projectiles:projectileUpdateObj, stats})
     if(round.updateString == newUpdateString) return false;

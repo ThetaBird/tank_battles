@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/ThetaBird/tank_battles#readme",
   "dependencies": {
+    "@seregpie/three.text-sprite": "^3.2.0",
     "axios": "^1.2.1",
     "body-parser": "^1.20.1",
     "dotenv": "^16.0.3",

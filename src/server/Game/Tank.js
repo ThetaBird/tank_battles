@@ -11,9 +11,11 @@ const radian = Math.PI;
 
 const MAP_SIZE = 150;//distance from center to edge
 
-function Tank(type, displayName){
+function Tank(type, did, displayName){
     this.displayName = displayName;
     this.constants = Parameters.TANK_CONSTANTS[type];
+    this.did = did || Date.now();
+
     if(!this.constants) return;
     /*
     {
@@ -31,8 +33,8 @@ function Tank(type, displayName){
     this.color = `#${Math.floor(Math.random()*16777215).toString(16)}`,
 
     this.pos = {
-        x:Math.random() * 20,
-        y:Math.random() * 20,
+        x:Math.random() * 200 - 100,
+        y:Math.random() * 200 - 100,
         theta_turret:0,
         theta_tank:0,
     };
@@ -80,7 +82,7 @@ const _updatePos = (tank) => {
         tank.pos.x += -1 * SPD * Math.sin(theta_tank) * meta.momentum;
         tank.pos.y -= SPD * Math.cos(theta_tank) * meta.momentum;
     }
-
+    
     if(rotate_tank){
         const max_tank_rotate = RTS * (rotate_tank > 0 ? 1 : -1);
         let final_val = theta_tank + max_tank_rotate;
@@ -89,8 +91,26 @@ const _updatePos = (tank) => {
         tank.pos.theta_tank = final_val;
         rotate_turret += max_tank_rotate;
     }
+    /*
     if(rotate_turret){
         const [d1, d2] = [m - theta_turret, radians - theta_turret + m].sort((a,b) => Math.abs(a) - Math.abs(b));
+        const rt = d1;
+
+        if(rt > 0){tank.pos.theta_turret += Math.min(rt, (RTS + .1));
+        }else{tank.pos.theta_turret += Math.max(rt, (RTS + .1) * -1);}
+        
+        if(tank.pos.theta_turret > radians) tank.pos.theta_turret -= radians;
+        else if(tank.pos.theta_turret < 0) tank.pos.theta_turret += radians;
+    }*/
+
+    if(rotate_turret){
+        let [d1, d2] = [];
+  
+        if(Math.abs(rotate_turret) > radian){
+            [d1, d2] = [theta_turret - m, m - radians + theta_turret].sort((a,b) => Math.abs(a) - Math.abs(b));
+        }else{
+            [d1, d2] = [m - theta_turret, radians - theta_turret + m].sort((a,b) => Math.abs(a) - Math.abs(b));
+        }
         const rt = d1;
 
         if(rt > 0){tank.pos.theta_turret += Math.min(rt, (RTS + .1));
@@ -111,7 +131,7 @@ Returns false if health remains above 0, true otherwise.
 */
 const _removeHealth = (tank, amt) => {
     tank.health -= amt;
-    if(tank.health <= 0 && !tank.meta.dead){tank.displayName = `_${tank.displayName}`; tank.meta.dead = true; return false;}
+    if(tank.health <= 0 && !tank.meta.dead){tank.meta.dead = true; return false;}
     return true;
 }
 

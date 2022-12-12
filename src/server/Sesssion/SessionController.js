@@ -28,11 +28,12 @@ function SessionController(io){
 
 //Add user data to memory. Used to keep track of display
 const _addUser = (controller, id, data) => {
-    const {uid, displayName} = data;
+    const {uid, did, displayName} = data;
 
     controller.users[uid] = {
         socket:id,
         displayName,
+        did,
         k:0,
         d:0,
         a:0,
