@@ -6,7 +6,7 @@ Author: Max Jikharev
 */
 
 module.exports = Object.freeze({
-    URL: (true) ? `http://localhost` : `http://cselehigh.us.to`,
+    URL: (true) ? `http://localhost` : `http://lehighcse.us.to`,
 
     NETWORK_LIMITS: {
         FIRELIMIT:1000/10,

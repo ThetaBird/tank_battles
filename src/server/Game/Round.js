@@ -17,6 +17,7 @@ function Round(){
 
     }
     this.tanks = {};
+    this.deadTanks = [];
     this.projectiles = [];
     this.stats = {};
 
@@ -35,7 +36,7 @@ function Round(){
 
 //Handle client socket requests
 const _spawnTank = (round, {uid, type, displayName}) => {
-    if(!round.tanks[uid] || round.tanks[uid].displayName.startsWith("_")) round.tanks[uid] = new Tank(type, displayName);
+    if(!round.tanks[uid]) round.tanks[uid] = new Tank(type, displayName);
 } //TODO: Give initial x & y pos
 
 const _updateTankInput = (round, uid, input) => {
@@ -50,7 +51,20 @@ const _fireProjectile = (round, uid) => {
 }
 
 
-const _moveTanks = (round) => Object.keys(round.tanks).forEach(uid => round.tanks[uid].updatePos())
+const _moveTanks = (round) => {
+    Object.keys(round.tanks).forEach(uid => {
+        
+        const tank = round.tanks[uid];
+        const alive = tank.updatePos();
+        const {displayName, pos} = tank;
+
+        if(!alive){ 
+            round.deadTanks.push({displayName, pos});
+            delete round.tanks[uid];
+        }
+    })
+
+}
 const _moveProjectiles = (round) => {
     round.projectiles.forEach(projectile => projectile.updatePos());
     round.projectiles = round.projectiles.filter(projectile => !projectile.delete);
@@ -60,7 +74,7 @@ const _checkCollisions = (round) => {}
 const _getUpdate = (round) => {
     const {tanks, projectiles, stats} = round;
 
-    const tankUpdateObj = [];
+    const tankUpdateObj = [...round.deadTanks];
     Object.keys(tanks).forEach(key => {
         const {displayName, team, pos, health} = tanks[key];
         tankUpdateObj.push({displayName, team, pos, health});

@@ -100,6 +100,12 @@ scene.add(pointLight, ambientLight);
 
 let addedTanks = [];
 let deadTanks = [];
+
+let allTanks = {
+    RECO:[],
+    DEAD:[]    
+}
+
 let addedProjectiles = [];
 
 let lastCoords = {
@@ -122,12 +128,12 @@ const upsertObjects = (data, displayName) => {
 }
 
 const upsertTanks = (tanks, {x, y}) => {
-    const expiredTanks = addedTanks.filter(t => !tanks.find(_t => _t.displayName == t.displayName));
+    const expiredTanks = allTanks.RECO.filter(t => !tanks.find(_t => _t.displayName == t.displayName));
     expiredTanks.forEach(t => {
-        scene.remove(t.object.turret);
-        scene.remove(t.object.body);
+        scene.remove(t.group);
+        //scene.remove(t.object.body);
     })
-    addedTanks = addedTanks.filter(t => tanks.find(_t => _t.displayName == t.displayName));
+    allTanks.RECO = allTanks.RECO.filter(t => tanks.find(_t => _t.displayName == t.displayName));
 
     let addedTank;
     for(const tank of tanks){
@@ -135,10 +141,10 @@ const upsertTanks = (tanks, {x, y}) => {
         console.log(tank.displayName)
         if(tank.displayName.startsWith("_")){ //dead tank
             tankType = "DEAD";
-            addedTank = [...deadTanks].reverse().find(deadT => (deadT.displayName == tank.displayName));
+            addedTank = [...allTanks.DEAD].reverse().find(deadT => (deadT.displayName == tank.displayName));
         }else{
             tankType = "RECO";
-            addedTank = addedTanks.find(addedT => (addedT.displayName == tank.displayName));
+            addedTank = allTanks.RECO.find(addedT => (addedT.displayName == tank.displayName));
         }
 
         
@@ -155,7 +161,7 @@ const upsertTanks = (tanks, {x, y}) => {
             tank.group = group;
 
             addedTank = tank;
-            addedTanks.push(tank);
+            allTanks[tankType].push(tank);
 
             scene.add(group);   
         }
