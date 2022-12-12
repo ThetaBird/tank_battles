@@ -15,7 +15,7 @@ module.exports = Object.freeze({
         SPAWNLIMIT:1000/1,
     },
 
-    CORPSE_EXPIRY: 30000,
+    CORPSE_EXPIRY: 120000,
 
     //Client-to-server socket msg types
     SOCKET_PROTOCOL_RCV: {
@@ -46,7 +46,7 @@ module.exports = Object.freeze({
         RECO:{
             HLT:100,
             SPD:.5,
-            DMG:40,
+            DMG:30,
             RNG:50,
             RLD:1000, //ms
             RTS:.03,

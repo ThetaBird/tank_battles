@@ -4,7 +4,7 @@ import {
     sendJoinToServer,
     tryConnect,
 } from './network';
-const {upsertObjects} = require('./render');
+const {upsertObjects, enableOrbit} = require('./render');
 const Parameters = require('../data');
 
 const tempIDData = `${Date.now()}`;
@@ -39,6 +39,7 @@ function logMouseMove(e){
 }
 
 function tryToggleKey(key, val){
+    if(key == 3){return enableOrbit();}
     if(!keys.includes(key) || val == input[key]) return false;
     input[key] = val;
     return true;

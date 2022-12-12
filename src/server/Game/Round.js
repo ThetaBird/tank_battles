@@ -101,7 +101,7 @@ const _checkCollisions = (round) => {
         Object.keys(round.tanks).forEach(uid => { 
             const tank = round.tanks[uid];
             if(projectile.uid != uid && estimateDistanceThreshold(tank, projectile, 5) && distance(tank, projectile) < 2.5){
-                tank.removeHealth(50);
+                tank.removeHealth(Parameters.TANK_CONSTANTS.RECO.DMG);
                 removeProjectileIDs.push(projectile.id);
             }
         })

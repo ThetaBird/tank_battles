@@ -29,11 +29,20 @@ const join_game = async (handler, data) => {
     let user;
     try{user = await getGoogleUser({code})}catch(e){}
 
-    if(!user) return handler.socket.emit(Parameters.SOCKET_PROTOCOL_SND.UNAUTH)
+    //if(!user) return handler.socket.emit(Parameters.SOCKET_PROTOCOL_SND.UNAUTH)
+    if(!user) {
+        data.uid = `${parseInt(Math.random() * 10000000) + Date.now()}`;
+        data.displayName= "Guest";
+        
+        handler.displayName = data.displayName;
+    }else{
+        data.uid = user.id;
+        data.displayName = user.given_name;
+        handler.displayName = user.given_name;
+    }
 
-    data.uid = user.id;
-    data.displayName = user.given_name;
-    handler.displayName = user.given_name;
+   
+    
     handler.uid = data.uid;
     handler.did = data.did;
     

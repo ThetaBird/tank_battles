@@ -4,7 +4,7 @@ const { OrbitControls } = require('three/examples/jsm/controls/OrbitControls');
 const TextSprite = require('@seregpie/three.text-sprite');
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGL1Renderer({
     canvas: document.querySelector('#tank_battles'),
 })
@@ -12,8 +12,9 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 camera.position.setZ(30);
 
-//const controls = new OrbitControls(camera, renderer.domElement)
-//controls.enableDamping = true
+
+let controls; 
+
 
 const loader = new THREE.TextureLoader();
 const texture = loader.load('resources/back.png');
@@ -69,6 +70,11 @@ const tankObjects = {
         turret:null,
     }
 };
+
+function enableOrbit(){
+    controls = new OrbitControls(camera, renderer.domElement);
+    return false
+}
 
 const createText = (text, health) => {
     const nameText = new TextSprite({
@@ -273,10 +279,10 @@ const upsertProjectiles = (projectiles, {x, y}) => {
 
 const animate = () => {
     requestAnimationFrame(animate);
-    //controls.update()
+    if(controls) controls.update()
     renderer.render(scene, camera);
 }
 
 animate();
 
-module.exports = {upsertObjects};
+module.exports = {upsertObjects, enableOrbit};
