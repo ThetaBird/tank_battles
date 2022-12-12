@@ -2,7 +2,7 @@ let counter = 1;
 
 function Projectile(uid, data){
     //Player
-    this.player = uid;
+    this.uid = uid;
     this.id = counter++;
 
     const {x,y,t,d,r} = data;

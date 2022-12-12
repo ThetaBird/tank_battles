@@ -69,7 +69,32 @@ const _moveProjectiles = (round) => {
     round.projectiles.forEach(projectile => projectile.updatePos());
     round.projectiles = round.projectiles.filter(projectile => !projectile.delete);
 }
-const _checkCollisions = (round) => {}
+
+const _checkCollisions = (round) => {
+    let removeProjectileIDs = [];
+    round.projectiles.forEach(projectile => {
+        //Check collisions with active tanks
+        Object.keys(round.tanks).forEach(uid => { 
+            const tank = round.tanks[uid];
+            if(projectile.uid != uid && estimateDistanceThreshold(tank, projectile, 5) && distance(tank, projectile) < 2.5){
+                tank.removeHealth(50);
+                removeProjectileIDs.push(projectile.id);
+            }
+        })
+
+        //Check collisions with dead tanks
+        round.deadTanks.forEach(tank => {
+            if(!removeProjectileIDs.includes(projectile.id) 
+                && estimateDistanceThreshold(tank, projectile, 5) 
+                && distance(tank, projectile) < 2.5){
+                    
+                removeProjectileIDs.push(projectile.id);
+            }
+        })
+        
+    })
+    round.projectiles = round.projectiles.filter(projectile => !removeProjectileIDs.includes(projectile.id));
+}
 
 const _getUpdate = (round) => {
     const {tanks, projectiles, stats} = round;
@@ -94,3 +119,21 @@ const _getUpdate = (round) => {
 }
 
 module.exports = {Round}
+
+const estimateDistanceThreshold = (o1, o2, threshold) => {
+    const o1pos = o1.pos || {x:o1.x, y:o1.y};
+    const o2pos = o2.pos || {x:o2.x, y:o2.y};
+
+    const dx = o1pos.x - o2pos.x;
+    const dy = o1pos.y - o2pos.y;
+
+    return (Math.abs(dx) + Math.abs(dy)) < threshold;
+}
+const distance = (o1, o2) => {
+    const o1pos = o1.pos || {x:o1.x, y:o1.y};
+    const o2pos = o2.pos || {x:o2.x, y:o2.y};
+
+    const dx = o1pos.x - o2pos.x;
+    const dy = o1pos.y - o2pos.y;
+    return Math.sqrt(dx * dx + dy * dy);
+}
