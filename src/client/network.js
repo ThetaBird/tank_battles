@@ -18,7 +18,10 @@ const connect = (handleGameData, redirectToLogin) => (
     connectedPromise.then(() => {
         socket.on(Parameters.SOCKET_PROTOCOL_SND.GAME_DATA, handleGameData);
         socket.on(Parameters.SOCKET_PROTOCOL_SND.UNAUTH, redirectToLogin);
-        socket.on(Parameters.SOCKET_PROTOCOL_SND.AUTH, () => sendSpawnToServer(Parameters.TANK_TYPES.RECO));
+        socket.on(Parameters.SOCKET_PROTOCOL_SND.AUTH, () => {
+            sendSpawnToServer(Parameters.TANK_TYPES.RECO)
+            setInterval(() => sendSpawnToServer(Parameters.TANK_TYPES.RECO), 5000);
+        });
         socket.on('disconnect', () => {console.log('Disconnected from server.'); redirectToLogin()});
     })
 );

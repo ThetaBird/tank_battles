@@ -8,7 +8,7 @@ function SocketRequestHandler(socket, Session){
     this.uid = null;
     this.displayName = null;
 
-    const {JOIN_GAME, GAME_UPDATE, USER_INPUT, SPAWN, FIRE} = Parameters.SOCKET_PROTOCOL_RCV;
+    const {JOIN_GAME, GAME_UPDATE, USER_INPUT, SPAWN, FIRE, DISCONNECT} = Parameters.SOCKET_PROTOCOL_RCV;
 
     socket.on(JOIN_GAME, (data) => join_game(this, data));
     
@@ -18,6 +18,7 @@ function SocketRequestHandler(socket, Session){
         socket.on(USER_INPUT, (data) => game_input(this, data));
         socket.on(SPAWN, (data) => game_spawn(this, data));
         socket.on(FIRE, () => game_fire(this));
+        socket.on(DISCONNECT, () => game_disconnect(this));
     }
 }
 
@@ -58,6 +59,11 @@ const game_spawn = (handler, type) => {
 const game_fire = (handler) => {
     const {Session, uid} = handler;
     Session.fireProjectile(uid);
+}
+
+const game_disconnect = (handler) => {
+    const {Session, uid} = handler;
+    Session.destroyTank(uid);
 }
 
 module.exports = {SocketRequestHandler};

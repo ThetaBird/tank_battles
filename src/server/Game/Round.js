@@ -24,6 +24,7 @@ function Round(){
     this.updateString = "";
 
     this.spawnTank = (data) => _spawnTank(this, data);
+    this.destroyTank = (uid) => _destroyTank(this, uid);
     this.updateTankInput = (uid, input) => _updateTankInput(this, uid, input);
     this.fireProjectile = (uid) => _fireProjectile(this, uid);
 
@@ -38,6 +39,15 @@ function Round(){
 const _spawnTank = (round, {uid, type, displayName}) => {
     if(!round.tanks[uid]) round.tanks[uid] = new Tank(type, displayName);
 } //TODO: Give initial x & y pos
+
+const _destroyTank = (round, uid) => {
+    if(!round.tanks[uid]) return;
+    const {pos} = round.tanks[uid];
+    round.deadTanks.push({ pos, t:Date.now()});
+    console.log(round.tanks);
+    console.log(round.deadTanks)
+    delete round.tanks[uid];
+}
 
 const _updateTankInput = (round, uid, input) => {
     if(!round.tanks[uid]) return;
@@ -56,12 +66,8 @@ const _moveTanks = (round) => {
         
         const tank = round.tanks[uid];
         const alive = tank.updatePos();
-        const {displayName, pos} = tank;
 
-        if(!alive){ 
-            round.deadTanks.push({displayName, pos});
-            delete round.tanks[uid];
-        }
+        if(!alive) round.destroyTank(uid)
     })
 
 }

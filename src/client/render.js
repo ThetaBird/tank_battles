@@ -92,14 +92,9 @@ loadOBJ('/resources/testBody.obj',"body")
 loadOBJ('/resources/testTurret.obj',"turret")
 
 
-console.log(tankObjects.RECO);
-
 //scene.add(mesh);
 scene.add(pointLight, ambientLight);
 
-
-let addedTanks = [];
-let deadTanks = [];
 
 let allTanks = {
     RECO:[],
@@ -128,25 +123,23 @@ const upsertObjects = (data, displayName) => {
 }
 
 const upsertTanks = (tanks, {x, y}) => {
+    //console.log(tanks)
     const expiredTanks = allTanks.RECO.filter(t => !tanks.find(_t => _t.displayName == t.displayName));
     expiredTanks.forEach(t => {
         scene.remove(t.group);
-        //scene.remove(t.object.body);
     })
     allTanks.RECO = allTanks.RECO.filter(t => tanks.find(_t => _t.displayName == t.displayName));
 
     let addedTank;
     for(const tank of tanks){
         let tankType;
-        console.log(tank.displayName)
-        if(tank.displayName.startsWith("_")){ //dead tank
+        if(tank.t){ //dead tank
             tankType = "DEAD";
-            addedTank = [...allTanks.DEAD].reverse().find(deadT => (deadT.displayName == tank.displayName));
+            addedTank = allTanks.DEAD.find(deadT => (deadT.t == tank.t));
         }else{
             tankType = "RECO";
             addedTank = allTanks.RECO.find(addedT => (addedT.displayName == tank.displayName));
         }
-
         
         if(!addedTank){
             tank.object = {

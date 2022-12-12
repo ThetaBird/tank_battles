@@ -22,6 +22,7 @@ module.exports = Object.freeze({
         USER_INPUT:"input", //client requests server to process change in input
         SPAWN:"spawn", //client requests to spawn to battlefield
         FIRE:"fire", //client requests to spawn a projectile
+        DISCONNECT:"disconnect", //client disconnects from server
     },
 
     //Server-to-client socket msg types

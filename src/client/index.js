@@ -57,6 +57,8 @@ const joinGameRequest = () => {
     document.addEventListener("keyup", logKeyUp);
 }
 
-tryConnect(handleGameData, redirectToLogin).then( () => {joinGameRequest();})
+tryConnect(handleGameData, redirectToLogin).then( () => {
+    joinGameRequest();
+})
 
 
