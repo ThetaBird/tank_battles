@@ -21,7 +21,7 @@ const connect = () => (
         socket.on(Parameters.SOCKET_PROTOCOL_SND.GAME_DATA, handleGameData);
         socket.on(Parameters.SOCKET_PROTOCOL_SND.UNAUTH, redirectToLogin);
         socket.on(Parameters.SOCKET_PROTOCOL_SND.AUTH, () => spawnTankRequest(Parameters.TANK_TYPES.RECO));
-        socket.on('disconnect', () => {console.log('Disconnected from server.')});
+        socket.on('disconnect', () => {console.log('Disconnected from server.'); location.reload()});
     })
   );
 
@@ -35,7 +35,7 @@ document.addEventListener("mousemove", logMouseMove);
 document.addEventListener("mousedown", logMouseDown);
 
 function handleGameData(data){
-    console.log(data);
+    //console.log(data);
     upsertObjects(JSON.parse(data), tempIDData);
 }
 
@@ -65,7 +65,7 @@ function logMouseMove(e){
     const {clientX, clientY} = e;
     let m = Math.atan2(clientX - window.innerWidth / 2, window.innerHeight / 2 - clientY) + Math.PI;
     input.m = m;
-    //console.log(m);
+    console.log(m);
     sendInputToServer();
 }
 

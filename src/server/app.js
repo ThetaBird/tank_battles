@@ -15,6 +15,11 @@ app.use(express.static(publicPath));
 app.use(bodyParser.urlencoded({ extended: false }));
 */
 
+process.on('unhandledRejection', async error => {
+    console.error('Unhandled promise rejection:', error);
+});
+
+
 app.set("views", path.resolve(__dirname, "../../public"));
 app.use(express.static(path.join(__dirname, "../../public")));
 app.use(express.json());
