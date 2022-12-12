@@ -93,6 +93,7 @@ const upsertObjects = (data, displayName) => {
 
     const me = tanks.find(tank => tank.displayName == displayName);
     if(!me) return;
+    console.log(me);
     const {x,y} = me.pos;
 
     upsertTanks(tanks, x, y);

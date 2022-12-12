@@ -59,7 +59,6 @@ function logMouseMove(e){
     const {clientX, clientY} = e;
     let m = Math.atan2(clientX - window.innerWidth / 2, window.innerHeight / 2 - clientY) + Math.PI;
     input.m = m;
-    console.log(m);
     sendInputToServer();
 }
 
