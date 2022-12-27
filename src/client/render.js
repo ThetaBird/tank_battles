@@ -73,6 +73,7 @@ const tankObjects = {
 
 function enableOrbit(){
     controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
     return false
 }
 
