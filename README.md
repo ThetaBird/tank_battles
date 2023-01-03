@@ -4,11 +4,12 @@ tank_battles is a basic socket.io game built in ~3 days for a final project. Alt
 
 - Login with Google OAuth
 - Smooth movement mechanics & physics calculations
+- Server-validated client behaviors
 - An object-oriented backend
 - 3-Dimensional graphics made possible with **Three.js**
 
 ## Installation & Initialization
-**Node.js 16.9.0 or newer is required.**
+**Node.js 16.9.0 or newer is recommended.**
 ```sh
 npm install 
 npm run build
@@ -18,6 +19,8 @@ sudo node src/server/app.js
 ```
 
 ## Notes
+
+**Google OAuth won't work without an oauth.keys.json file containing the relevant google API information. This has been omitted from the repository for security concerns.**
 
 There are unresolved inefficiencies with this code due to time constraints:
 
