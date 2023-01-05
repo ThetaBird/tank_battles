@@ -25,7 +25,7 @@ sudo node src/server/app.js
 There are unresolved inefficiencies with this code due to time constraints:
 
 - Undesired behavior when rotating the turret past the threshold point directly below the tank
-- The clients send input data through the socket 60 times/sec (the server does not verify this and is vulnerable to overload attacks), performs physics calculations 30 times/sec, and sends data back to the client 60 times/sec (if changes are detected). This results in extremely high outbound data usage. This can be mitigated by sending data to the client ~10 times/sec and having the clients tween the movements to whatever refresh rate they have. The following is a network usage graph for a ~10-minute demonstration with ~40 concurrent players on a single threaded shared cloud complete instance:
+- The clients send input data through the socket 60 times/sec (the server does not verify this and is vulnerable to overload attacks), performs physics calculations 30 times/sec, and sends data back to the client 60 times/sec (if changes are detected). This results in extremely high outbound data usage. This can be mitigated by sending data to the client ~10 times/sec and having the clients tween the movements to whatever refresh rate they have. The following is a network usage graph for a ~10-minute demonstration with ~40 concurrent players on a single threaded shared cloud compute instance:
 
 <div align="center">
     <img src="https://us-east-1.tixte.net/uploads/tacti.bot.style/tank_battles_test.jpeg" width="546" alt="tank_battles_network_usage" />
